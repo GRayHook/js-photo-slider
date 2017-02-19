@@ -1,0 +1,16 @@
+.slider_holder img{
+  display: block;
+  transition: all 0.5s cubic-bezier(0,0,0.2,1) 0s;
+}
+.slider_ctl{
+  position:absolute;
+}
+.slider_holder{
+  position: absolute;
+  overflow: hidden;
+}
+.slider_dot{
+  position: absolute;
+  top: 0px;
+  transition: all 0.5s cubic-bezier(0,0,0.2,1) 0s;
+}
