@@ -13,6 +13,9 @@
       echo date("dHis", filemtime('js-scripts/main.js'));
     ?>"></script>
     <link type="text/css" rel="StyleSheet" href="style/slider.css?d=<?php
+			echo date("dHis", filemtime('style/slider.css'));
+		?>" />
+    <link type="text/css" rel="StyleSheet" href="style/main.css?d=<?php
 			echo date("dHis", filemtime('style/main.css'));
 		?>" />
   </head>
