@@ -20,72 +20,71 @@ function slider(div, imgs, flags){
   zis.options = new slider_opts();
   if(typeof flags == "object")
     Object.assign(zis.options, flags);
-  else{
-    if(flags !== null) // Парсим строку с флагами
-      while(flags !== ""){
-        var c = pop_symbol(flags);
-        flags = drop_symbol(flags);
-        switch (c) {
-          case 'd': // скрыть точки
-            zis.options.hide_dots = true;
-            break;
-          case 'c': // скрыть управление
-            zis.options.hide_ctl = true;
-            break;
-          case 'f': // Запретить палец
-            zis.options.deny_finger = true;
-            break;
-          case 'w': // Установить ширину, например: w(200)
-            zis.options.width = get_from_skobki(flags) * 1;
-            flags = drop_skobki(flags);
-            break;
-          case 'h': // Установить высоту, например: h(100)
-            zis.options.height = get_from_skobki(flags) * 1;
-            flags = drop_skobki(flags);
-            break;
-          case 't': // Таймер автослайда, например: t(15000)
-            if(get_from_skobki(flags) == '0')
-              zis.options.timer = false;
-            else
-              zis.options.timer = get_from_skobki(flags) * 1;
-            flags = drop_skobki(flags);
-            break;
-          case 'm': // Расстояние между точками, например: t(15)
-              zis.options.m = get_from_skobki(flags) * 1;
-            flags = drop_skobki(flags);
-            break;
-          case 'r': // Радиус точек, например: t(15)
-              zis.options.r = get_from_skobki(flags) * 1;
-            flags = drop_skobki(flags);
-            break;
-          case 'b': // Толщина границы точек, например: t(15)
-              zis.options.br = get_from_skobki(flags) * 1;
-            flags = drop_skobki(flags);
-            break;
-          case 'l': // Лево
-              zis.options.ctl_img.left = get_from_skobki(flags);
-            flags = drop_skobki(flags);
-            break;
-          case 'p': // Право
-              zis.options.ctl_img.right = get_from_skobki(flags);
-            flags = drop_skobki(flags);
-            break;
-          case 'b': // Толщина границы точек, например: t(15)
-              zis.options.br = get_from_skobki(flags) * 1;
-            flags = drop_skobki(flags);
-            break;
-          case 'a': // Таймер автохолда, например: a(20000)
-            if(get_from_skobki(flags) == '0')
-              zis.options.autohold = false;
-            else
-              zis.options.autohold = get_from_skobki(flags) * 1;
-            flags = drop_skobki(flags);
-            break;
-          default:
-            console.log("Флаги зафейлены");
-        }
+  else if(typeof flags == "string") // Парсим строку с флагами
+    while(flags !== ""){
+      var c = pop_symbol(flags);
+      flags = drop_symbol(flags);
+      switch (c) {
+        case 'd': // скрыть точки
+          zis.options.hide_dots = true;
+          break;
+        case 'c': // скрыть управление
+          zis.options.hide_ctl = true;
+          break;
+        case 'f': // Запретить палец
+          zis.options.deny_finger = true;
+          break;
+        case 'w': // Установить ширину, например: w(200)
+          zis.options.width = get_from_skobki(flags) * 1;
+          flags = drop_skobki(flags);
+          break;
+        case 'h': // Установить высоту, например: h(100)
+          zis.options.height = get_from_skobki(flags) * 1;
+          flags = drop_skobki(flags);
+          break;
+        case 't': // Таймер автослайда, например: t(15000)
+          if(get_from_skobki(flags) == '0')
+            zis.options.timer = false;
+          else
+            zis.options.timer = get_from_skobki(flags) * 1;
+          flags = drop_skobki(flags);
+          break;
+        case 'm': // Расстояние между точками, например: t(15)
+            zis.options.m = get_from_skobki(flags) * 1;
+          flags = drop_skobki(flags);
+          break;
+        case 'r': // Радиус точек, например: t(15)
+            zis.options.r = get_from_skobki(flags) * 1;
+          flags = drop_skobki(flags);
+          break;
+        case 'b': // Толщина границы точек, например: t(15)
+            zis.options.br = get_from_skobki(flags) * 1;
+          flags = drop_skobki(flags);
+          break;
+        case 'l': // Лево
+            zis.options.ctl_img.left = get_from_skobki(flags);
+          flags = drop_skobki(flags);
+          break;
+        case 'p': // Право
+            zis.options.ctl_img.right = get_from_skobki(flags);
+          flags = drop_skobki(flags);
+          break;
+        case 'b': // Толщина границы точек, например: t(15)
+            zis.options.br = get_from_skobki(flags) * 1;
+          flags = drop_skobki(flags);
+          break;
+        case 'a': // Таймер автохолда, например: a(20000)
+          if(get_from_skobki(flags) == '0')
+            zis.options.autohold = false;
+          else
+            zis.options.autohold = get_from_skobki(flags) * 1;
+          flags = drop_skobki(flags);
+          break;
+        default:
+          console.log("Флаги зафейлены");
       }
-  }
+    }
+
   zis.next = function() {
     if(zis.n_cur === zis.imgs.length - 1)
       zis.prev_to_beg();
@@ -332,6 +331,10 @@ function slider_dot(papa, id, br, r, color, bcolor) {
 
     zis.show = function() {
       var divka = document.createElement("div");
+      var batya;
+      if(!(batya = document.getElementById(zis.papa.div.id + "_slider_dot_holder")))
+        batya = document.createElement("div");
+      batya.id = zis.papa.div.id + "_slider_dot_holder";
       divka.id = zis.papa.div.id + "_slider_dot_" + zis.id;
       divka.classList.add("slider_dot");
       divka.style.background = zis.color;
@@ -342,8 +345,8 @@ function slider_dot(papa, id, br, r, color, bcolor) {
       divka.style.left = zis.position() + 'px';
       divka.style.top = zis.papa.options.height - 15 -
                         (zis.radius + zis.border_weight) * 2 + 'px';
-      zis.papa.hldr.appendChild(divka);
-      zis.div = divka;
+      zis.papa.hldr.appendChild(batya);
+      batya.appendChild(divka);
       return zis;
     };
     zis.position = function() {
