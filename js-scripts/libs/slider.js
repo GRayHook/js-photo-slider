@@ -269,6 +269,30 @@ function slider(div, imgs, flags){
         elem3 = document.getElementById(zis.div.id + "_slider-" +
                                         zis.n_cur);
         elem3.style.transition = '';
+      } else {
+        zis.prev();
+        zis.next();
+        if(zis.imgs.length > 2){
+          if(zis.n_cur === (zis.imgs.length - 2))
+            elem1 = document.getElementById(zis.div.id + "_slider-" + 0);
+          else if(zis.n_cur === (zis.imgs.length - 1))
+            elem1 = document.getElementById(zis.div.id + "_slider-" + 1);
+          else
+            elem1 = document.getElementById(zis.div.id + "_slider-" +
+                                            (zis.n_cur + 2));
+          elem1.style.transition = '';
+        }
+
+        if(zis.n_cur === (zis.imgs.length - 1))
+          elem2 = document.getElementById(zis.div.id + "_slider-" + 0);
+        else
+          elem2 = document.getElementById(zis.div.id + "_slider-" +
+                                          (zis.n_cur + 1));
+        elem2.style.transition = '';
+
+        elem3 = document.getElementById(zis.div.id + "_slider-" +
+                                        zis.n_cur);
+        elem3.style.transition = '';
       }
     };
     zis.touches.callback_move = function() {
