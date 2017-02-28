@@ -1,6 +1,5 @@
 var IIITYKA1, IIITYKA2, IIITYKA3;
 window.onload = function(){
-
   IIITYKA1 = new slider(document.getElementById("slider1"),
                        ['img/1.jpg',
                         'img/2.jpg',
@@ -8,7 +7,7 @@ window.onload = function(){
                        't(500)fcd');
   IIITYKA2 = new slider(document.getElementById("slider2"),
                         null,
-                        'w(350)h(275)a(0)m(15)l(img/right.png)p(img/left.png)')
+                        'w(a)h(a)a(0)m(15)l(img/right.png)p(img/left.png)')
             .show();
   IIITYKA3 = new slider(document.getElementById("slider3"),
                         ['img/1.jpg',

@@ -11,7 +11,7 @@ function slider(div, imgs, flags){
     zis.div.childNodes.forEach( function(elem) {
       if(elem.tagName == "IMG"){
         zis.imgs.push(elem.src);
-        zis.div.removeChild(elem);
+        //zis.div.removeChild(elem);
       }
     } );
   else
@@ -36,11 +36,17 @@ function slider(div, imgs, flags){
             zis.options.deny_finger = true;
             break;
           case 'w': // Установить ширину, например: w(200)
-            zis.options.width = get_from_skobki(flags) * 1;
+            if (get_from_skobki(flags) == "a")
+              zis.options.width = "auto";
+            else
+              zis.options.width = get_from_skobki(flags) * 1;
             flags = drop_skobki(flags);
             break;
           case 'h': // Установить высоту, например: h(100)
-            zis.options.height = get_from_skobki(flags) * 1;
+            if (get_from_skobki(flags) == "a")
+              zis.options.height = "auto";
+            else
+              zis.options.height = get_from_skobki(flags) * 1;
             flags = drop_skobki(flags);
             break;
           case 't': // Таймер автослайда, например: t(15000)
@@ -86,11 +92,16 @@ function slider(div, imgs, flags){
         }
       }
   }
+  if (zis.options.width == "auto")
+    zis.options.width = max_width_height_of_dochkas(zis.div)[0];
+  if (zis.options.height == "auto")
+    zis.options.height = max_width_height_of_dochkas(zis.div)[1];
   zis.next = function() {
     if(zis.n_cur === zis.imgs.length - 1)
       zis.prev_to_beg();
     else {
-      document.getElementById(zis.div.id + "_slider-" + zis.n_cur).style.marginLeft = '-' + zis.options.width + 'px';
+      document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
+              .style.marginLeft = '-' + zis.options.width + 'px';
       if(!zis.options.hide_dots)
         zis.dots[zis.n_cur].invert();
       document.getElementById(zis.div.id + "_slider-" + (++zis.n_cur))
@@ -441,4 +452,17 @@ function drop_symbol(str4ka){
 }
 function pop_symbol(str4ka){
   return str4ka[0];
+}
+function max_width_height_of_dochkas(divka){
+  result = [];
+  result[0] = 0;
+  result[1] = 0;
+  divka.childNodes.forEach( function(elem) {
+    if (elem.offsetWidth > result[0])
+      result[0] = elem.offsetWidth;
+    if (elem.offsetHeight > result[1])
+      result[1] = elem.offsetHeight;
+    console.log(elem.offsetWidth + " - " + elem.offsetHeight);
+  });
+  return result;
 }

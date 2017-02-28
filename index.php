@@ -25,9 +25,9 @@
 
     <div id = "slider1"></div>
     <div id = "slider2">
-      <img src = "img/1.jpg">
-      <img src = "img/2.jpg">
-      <img src = "img/3.jpg">
+      <img src = "img/1.jpg" height = "300" width = "450">
+      <img src = "img/2.jpg" height = "100" width = "150">
+      <img src = "img/3.jpg" height = "1" width = "1">
     </div>
     <div id = "slider3"></div>
 
