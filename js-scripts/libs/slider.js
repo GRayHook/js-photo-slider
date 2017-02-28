@@ -138,32 +138,65 @@ function slider(div, imgs, flags){
     zis.div.style.width = zis.options.width + 'px';
     zis.div.style.height = zis.options.height + 'px';
     var str4ka = '\n';
-    str4ka += '<div id = "' + zis.div.id + '_slider_holder" ' +
-              'class = "slider_holder">\n';
+    var crazy_frag = document.createDocumentFragment();
+    var holder = document.createElement("div");
+    holder.id = zis.div.id + '_slider_holder';
+    holder.classList.add("slider_holder");
+    crazy_frag.appendChild(holder);
+    // str4ka += '<div id = "' + zis.div.id + '_slider_holder" ' +
+    //           'class = "slider_holder">\n';
+
     if(!zis.options.hide_ctl){
-      str4ka += '<img id = "' + zis.div.id + 'slider_ctl_l"' +
-                'class = "slider_ctl" src = "' + zis.options.ctl_img.left +
-                '"><img id = "' + zis.div.id + 'slider_ctl_r"' +
-                'class = "slider_ctl" src = "' + zis.options.ctl_img.right +
-                '">';
+      var ctl_left = document.createElement("img");
+      var ctl_right = document.createElement("img");
+      ctl_left.id = zis.div.id + 'slider_ctl_l';
+      ctl_right.id = zis.div.id + 'slider_ctl_r';
+      ctl_left.classList.add("slider_ctl");
+      ctl_right.classList.add("slider_ctl");
+      ctl_left.src = zis.options.ctl_img.left;
+      ctl_right.src = zis.options.ctl_img.right;
+      holder.appendChild(ctl_left);
+      holder.appendChild(ctl_right);
+      // str4ka += '<img id = "' + zis.div.id + 'slider_ctl_l"' +
+      //           'class = "slider_ctl" src = "' + zis.options.ctl_img.left +
+      //           '"><img id = "' + zis.div.id + 'slider_ctl_r"' +
+      //           'class = "slider_ctl" src = "' + zis.options.ctl_img.right +
+      //           '">';
     }
-    //if(!zis.options.hide_dots)
-      zis.dots = [];
+    zis.dots = [];
     zis.imgs.forEach(function(elem) {
-      str4ka += '\n<img id = "' + zis.div.id + '_slider-' +
-                n + '" src = "' + elem + '" style = "';
-      if(n === 0)
-        str4ka += 'margin-top: 0px; margin-left: 0px;';
-      else
-        str4ka += 'margin-top: -' + zis.options.height + 'px; margin-left: ' +
-                  zis.options.width + 'px;';
-      str4ka += 'width: ' + zis.options.width + 'px; height: ' +
-                zis.options.height + 'px;">';
+      var imgka = document.createElement("img");
+      imgka.id = zis.div.id + '_slider-' + n;
+      imgka.src = elem;
+      if (n === 0){
+        imgka.style.marginTop = '0px';
+        imgka.style.marginLeft = '0px';
+      } else {
+        imgka.style.marginTop = '-' + zis.options.height + 'px';
+        imgka.style.marginLeft = zis.options.width + 'px';
+      }
+      imgka.style.width = zis.options.width + 'px';
+      imgka.style.height = zis.options.height + 'px';
+      holder.appendChild(imgka);
+      // str4ka += '\n<img id = "' + zis.div.id + '_slider-' +
+      //           n + '" src = "' + elem + '" style = "';
+      // if(n === 0)
+      //   str4ka += 'margin-top: 0px; margin-left: 0px;';
+      // else
+      //   str4ka += 'margin-top: -' + zis.options.height + 'px; margin-left: ' +
+      //             zis.options.width + 'px;';
+      // str4ka += 'width: ' + zis.options.width + 'px; height: ' +
+      //           zis.options.height + 'px;">';
       //if(!zis.options.hide_dots)
         zis.dots.push(new slider_dot(zis, n++, zis.options.br, zis.options.r));
     });
-    str4ka += '\n</div>\n';
-    zis.div.innerHTML = str4ka;
+    // str4ka += '\n</div>\n';
+    // zis.div.innerHTML = '';
+    zis.div.childNodes.forEach( function(elem) {
+      if (elem.tagName == "IMG" || elem.tagName == "DIV")
+        elem.remove();
+    } );
+    zis.div.appendChild(crazy_frag);
     zis.hldr = document.getElementById(zis.div.id + '_slider_holder');
     zis.hldr.style.width = zis.options.width + 'px';
     zis.hldr.style.height = zis.options.height + 'px';
@@ -367,7 +400,8 @@ function slider_dot(papa, id, br, r, color, bcolor) {
 
     zis.show = function() {
       var batya;
-      if(!(batya = document.getElementById(zis.papa.div.id + "_slider_dot_holder")))
+      if(!(batya = document.getElementById(
+                   zis.papa.div.id + "_slider_dot_holder")))
        {batya = document.createElement("div");
        batya.id = zis.papa.div.id + "_slider_dot_holder";
        zis.papa.hldr.appendChild(batya);}
@@ -391,7 +425,8 @@ function slider_dot(papa, id, br, r, color, bcolor) {
       return ( zis.papa.options.width / 2 -
                ( zis.papa.dots.length * (zis.radius + zis.border_weight) * 2 +
                (zis.papa.dots.length - 1) * zis.papa.options.m ) / 2 ) +
-             (zis.id * ((zis.radius + zis.border_weight) * 2 + zis.papa.options.m));
+             (zis.id * ((zis.radius + zis.border_weight) * 2 +
+              zis.papa.options.m));
     };
     zis.invert = function(non_r, non_c) {
       if(!non_r)
