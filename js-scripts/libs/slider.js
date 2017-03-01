@@ -12,6 +12,8 @@ function slider(div, imgs, flags){
       if(elem.tagName == "IMG"){
         zis.imgs.push(elem.src);
         //zis.div.removeChild(elem);
+      } else if(elem.tagName == "DIV") {
+        zis.imgs.push(elem);
       }
     } );
   else
@@ -165,9 +167,15 @@ function slider(div, imgs, flags){
     }
     zis.dots = [];
     zis.imgs.forEach(function(elem) {
-      var imgka = document.createElement("img");
+      var imgka;
+      if (typeof elem == "string") {
+        imgka = document.createElement("img");
+        imgka.src = elem;
+      }
+      else if (typeof elem == "object") {
+        imgka = elem;
+      }
       imgka.id = zis.div.id + '_slider-' + n;
-      imgka.src = elem;
       if (n === 0){
         imgka.style.marginTop = '0px';
         imgka.style.marginLeft = '0px';

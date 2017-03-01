@@ -2,6 +2,10 @@
   display: block;
   transition: all 0.5s cubic-bezier(0,0,0.2,1) 0s;
 }
+.slider_holder div{
+  display: block;
+  transition: all 0.5s cubic-bezier(0,0,0.2,1) 0s;
+}
 .slider_ctl{
   position:absolute;
 }
@@ -11,6 +15,6 @@
 }
 .slider_dot{
   position: absolute;
-  top: 0px;
+  top: 0;
   transition: all 0.5s cubic-bezier(0,0,0.2,1) 0s;
 }
