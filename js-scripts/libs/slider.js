@@ -19,6 +19,7 @@ function slider(div, imgs, flags){
   else
     zis.imgs = imgs;
   zis.n_cur = 0;
+
   zis.options = new slider_opts();
   if(typeof flags == "object")
     Object.assign(zis.options, flags);
@@ -28,14 +29,14 @@ function slider(div, imgs, flags){
         var c = pop_symbol(flags);
         flags = drop_symbol(flags);
         switch (c) {
-          case 'd': // скрыть точки
-            zis.options.hide_dots = true;
+          case 'd': // Показать точки
+            zis.options.dots = true;
             break;
-          case 'c': // скрыть управление
-            zis.options.hide_ctl = true;
+          case 'c': // Показать управление
+            zis.options.controls = true;
             break;
           case 'f': // Запретить палец
-            zis.options.deny_finger = true;
+            zis.options.touches = true;
             break;
           case 'w': // Установить ширину, например: w(200)
             if (get_from_skobki(flags) == "a")
@@ -53,40 +54,40 @@ function slider(div, imgs, flags){
             break;
           case 't': // Таймер автослайда, например: t(15000)
             if(get_from_skobki(flags) == '0')
-              zis.options.timer = false;
+              zis.options.timerAutoSlide = false;
             else
-              zis.options.timer = get_from_skobki(flags) * 1;
+              zis.options.timerAutoSlide = get_from_skobki(flags) * 1;
             flags = drop_skobki(flags);
             break;
           case 'm': // Расстояние между точками, например: t(15)
-              zis.options.m = get_from_skobki(flags) * 1;
+              zis.options.dotsMargin = get_from_skobki(flags) * 1;
             flags = drop_skobki(flags);
             break;
           case 'r': // Радиус точек, например: t(15)
-              zis.options.r = get_from_skobki(flags) * 1;
+              zis.options.dotsRadius = get_from_skobki(flags) * 1;
             flags = drop_skobki(flags);
             break;
           case 'b': // Толщина границы точек, например: t(15)
-              zis.options.br = get_from_skobki(flags) * 1;
+              zis.options.dotsBorder = get_from_skobki(flags) * 1;
             flags = drop_skobki(flags);
             break;
           case 'l': // Лево
-              zis.options.ctl_img.left = get_from_skobki(flags);
+              zis.options.controlsImages.left = get_from_skobki(flags);
             flags = drop_skobki(flags);
             break;
           case 'p': // Право
-              zis.options.ctl_img.right = get_from_skobki(flags);
+              zis.options.controlsImages.right = get_from_skobki(flags);
             flags = drop_skobki(flags);
             break;
           case 'b': // Толщина границы точек, например: t(15)
-              zis.options.br = get_from_skobki(flags) * 1;
+              zis.options.dotsBorder = get_from_skobki(flags) * 1;
             flags = drop_skobki(flags);
             break;
           case 'a': // Таймер автохолда, например: a(20000)
             if(get_from_skobki(flags) == '0')
-              zis.options.autohold = false;
+              zis.options.delayAfterAction = false;
             else
-              zis.options.autohold = get_from_skobki(flags) * 1;
+              zis.options.delayAfterAction = get_from_skobki(flags) * 1;
             flags = drop_skobki(flags);
             break;
           default:
@@ -98,17 +99,18 @@ function slider(div, imgs, flags){
     zis.options.width = max_width_height_of_dochkas(zis.div)[0];
   if (zis.options.height == "auto")
     zis.options.height = max_width_height_of_dochkas(zis.div)[1];
+
   zis.next = function() {
     if(zis.n_cur === zis.imgs.length - 1)
       zis.prev_to_beg();
     else {
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
               .style.marginLeft = '-' + zis.options.width + 'px';
-      if(!zis.options.hide_dots)
+      if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
       document.getElementById(zis.div.id + "_slider-" + (++zis.n_cur))
       .style.marginLeft = '0px';
-      if(!zis.options.hide_dots)
+      if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     }
   };
@@ -118,11 +120,11 @@ function slider(div, imgs, flags){
     else {
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
       .style.marginLeft = zis.options.width + 'px';
-      if(!zis.options.hide_dots)
+      if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
       document.getElementById(zis.div.id + "_slider-" + (--zis.n_cur))
       .style.marginLeft = '0px';
-      if(!zis.options.hide_dots)
+      if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     }
   };
@@ -134,38 +136,34 @@ function slider(div, imgs, flags){
     while(zis.n_cur !== 0)
       zis.prev();
   };
+
   zis.show = function() { // Метод для инициализации слайдера.
     var n = 0;
     zis.n_cur = 0;
     zis.div.style.width = zis.options.width + 'px';
     zis.div.style.height = zis.options.height + 'px';
-    var str4ka = '\n';
     var crazy_frag = document.createDocumentFragment();
     var holder = document.createElement("div");
+
     holder.id = zis.div.id + '_slider_holder';
     holder.classList.add("slider_holder");
     crazy_frag.appendChild(holder);
-    // str4ka += '<div id = "' + zis.div.id + '_slider_holder" ' +
-    //           'class = "slider_holder">\n';
 
-    if(!zis.options.hide_ctl){
+    if(zis.options.controls){
       var ctl_left = document.createElement("img");
       var ctl_right = document.createElement("img");
       ctl_left.id = zis.div.id + 'slider_ctl_l';
       ctl_right.id = zis.div.id + 'slider_ctl_r';
       ctl_left.classList.add("slider_ctl");
       ctl_right.classList.add("slider_ctl");
-      ctl_left.src = zis.options.ctl_img.left;
-      ctl_right.src = zis.options.ctl_img.right;
+      ctl_left.src = zis.options.controlsImages.left;
+      ctl_right.src = zis.options.controlsImages.right;
       holder.appendChild(ctl_left);
       holder.appendChild(ctl_right);
-      // str4ka += '<img id = "' + zis.div.id + 'slider_ctl_l"' +
-      //           'class = "slider_ctl" src = "' + zis.options.ctl_img.left +
-      //           '"><img id = "' + zis.div.id + 'slider_ctl_r"' +
-      //           'class = "slider_ctl" src = "' + zis.options.ctl_img.right +
-      //           '">';
     }
+
     zis.dots = [];
+
     zis.imgs.forEach(function(elem) {
       var imgka;
       if (typeof elem == "string") {
@@ -186,37 +184,30 @@ function slider(div, imgs, flags){
       imgka.style.width = zis.options.width + 'px';
       imgka.style.height = zis.options.height + 'px';
       holder.appendChild(imgka);
-      // str4ka += '\n<img id = "' + zis.div.id + '_slider-' +
-      //           n + '" src = "' + elem + '" style = "';
-      // if(n === 0)
-      //   str4ka += 'margin-top: 0px; margin-left: 0px;';
-      // else
-      //   str4ka += 'margin-top: -' + zis.options.height + 'px; margin-left: ' +
-      //             zis.options.width + 'px;';
-      // str4ka += 'width: ' + zis.options.width + 'px; height: ' +
-      //           zis.options.height + 'px;">';
-      //if(!zis.options.hide_dots)
-        zis.dots.push(new slider_dot(zis, n++, zis.options.br, zis.options.r));
+
+      zis.dots.push(new slider_dot(zis, n++, zis.options.dotsBorder,
+                    zis.options.dotsRadius));
     });
-    // str4ka += '\n</div>\n';
-    // zis.div.innerHTML = '';
+
     zis.div.childNodes.forEach( function(elem) {
       if (elem.tagName == "IMG" || elem.tagName == "DIV")
         elem.remove();
     } );
     zis.div.appendChild(crazy_frag);
+
     zis.hldr = document.getElementById(zis.div.id + '_slider_holder');
     zis.hldr.style.width = zis.options.width + 'px';
     zis.hldr.style.height = zis.options.height + 'px';
-    if(!zis.options.hide_ctl){
+
+    if(zis.options.controls){
       zis.ctl = {};
       zis.ctl.l = document.getElementById(zis.div.id + "slider_ctl_l");
       zis.ctl.r = document.getElementById(zis.div.id + "slider_ctl_r");
       zis.ctl.r.onload = function() {
         zis.ctl.r.onclick = function () {
           zis.next();
-          if(zis.options.timer && zis.options.autohold)
-            zis.autohold();
+          if(zis.options.timerAutoSlide && zis.options.delayAfterAction)
+            zis.delayAfterAction();
         };
         //zis.ctl.r.ontouchstart = zis.ctl.r.onclick;
         zis.ctl.r.style.top = zis.options.height / 2 -
@@ -227,8 +218,8 @@ function slider(div, imgs, flags){
       zis.ctl.l.onload = function() {
         zis.ctl.l.onclick = function () {
           zis.prev();
-          if(zis.options.timer && zis.options.autohold)
-            zis.autohold();
+          if(zis.options.timerAutoSlide && zis.options.delayAfterAction)
+            zis.delayAfterAction();
         };
         //zis.ctl.l.ontouchstart = zis.ctl.l.onclick;
         zis.ctl.l.style.top = zis.options.height / 2 -
@@ -237,43 +228,49 @@ function slider(div, imgs, flags){
       };
     }
 
-    if(!zis.options.hide_dots){
+    if(zis.options.dots){
       zis.dots.forEach(function (elem) { elem.show(); });
       zis.dots[0].invert();
     }
-    if(zis.options.timer){
+
+    if(zis.options.timerAutoSlide){
       zis.stop_timer();
       zis.start_timer();
     }
-    if(!zis.options.deny_finger)
+
+    if(zis.options.touches)
       zis.touches.touches_addEvnts(zis.hldr);
     return zis;
   };
+
   zis.start_timer = function() {
-    zis.timer_id = setInterval( function() { zis.next(); }, zis.options.timer );
+    zis.timerAutoSlide_id = setInterval( function() { zis.next(); }, zis.options.timerAutoSlide );
   };
   zis.stop_timer = function() {
-    clearInterval(zis.timer_id);
+    clearInterval(zis.timerAutoSlide_id);
   };
-  zis.autohold = function() {
+  zis.delayAfterAction = function() {
     zis.stop_timer();
-    clearTimeout(zis.timer_id2);
-    zis.timer_id2 = setTimeout( function() { zis.start_timer(); },
-                               zis.options.autohold );
+    clearTimeout(zis.timerAutoSlide_id2);
+    zis.timerAutoSlide_id2 = setTimeout( function() { zis.start_timer(); },
+                               zis.options.delayAfterAction );
   };
-  if(!zis.options.hide_dots){
+
+  if(zis.options.dots){
     zis.reload_dots = function(r, br, color, bcolor){
       zis.dots.forEach( function(elem) { elem.change(r, br, color, bcolor); });
     };
   }
-  if(!zis.options.deny_finger){
+
+  if(zis.options.touches){
     zis.touches = new touches();
     zis.touches.callback_start = function() {
-      zis.autohold();
+      zis.delayAfterAction();
     };
     zis.touches.callback_stop = function() {
-      var elem1, elem2, elem3;
-      if((zis.touches.posX - zis.touches.posX2) < -60) {
+      var elem1, elem2, elem3,
+          difference = zis.touches.posX - zis.touches.posX2;
+      if(difference < -zis.options.touchDifferenceToSlide) {
         zis.next();
         if(zis.imgs.length > 2){
           if(zis.n_cur === 0)
@@ -298,7 +295,7 @@ function slider(div, imgs, flags){
                                           (zis.n_cur - 1));
         elem2.style.transition = '';
         elem3.style.transition = '';
-      } else if((zis.touches.posX - zis.touches.posX2) > 60){
+      } else if(difference > zis.options.touchDifferenceToSlide){
         zis.prev();
         if(zis.imgs.length > 2){
           if(zis.n_cur === (zis.imgs.length - 2))
@@ -310,7 +307,6 @@ function slider(div, imgs, flags){
                                             (zis.n_cur + 2));
           elem1.style.transition = '';
         }
-
         if(zis.n_cur === (zis.imgs.length - 1))
           elem2 = document.getElementById(zis.div.id + "_slider-" + 0);
         else
@@ -333,12 +329,14 @@ function slider(div, imgs, flags){
           document.getElementById(zis.div.id + "_slider-" +
                                   (zis.imgs.length - 1))
                   .style.marginLeft = '-' + zis.options.width + 'px';
+
         if(zis.n_cur !== (zis.imgs.length - 1))
           document.getElementById(zis.div.id + "_slider-" + (zis.n_cur + 1))
                   .style.marginLeft = zis.options.width + 'px';
         else
-          document.getElementById(zis.div.id + "_slider-" + 0)
+          document.getElementById(zis.div.id + "_slider-" + '0')
                   .style.marginLeft = zis.options.width + 'px';
+
         document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
                 .style.marginLeft = '0px';
       }
@@ -373,18 +371,21 @@ function slider(div, imgs, flags){
 
 function slider_opts(){ // Конструктор опций для слайдера.
   // Здесь дефолтные значения:
-  this.hide_dots = false;
-  this.hide_ctl = false;
-  this.deny_finger = false;
-  this.timer = 5000;
-  this.autohold = 10000;
-  this.width = 300;
-  this.height = 200;
-  this.ctl_img = {
+  this.dots = false; // Включить точки
+  this.controls = false; // Включить стрелки
+  this.touches = true; // Включить управление тачскрином
+  this.timerAutoSlide = 5000; // Таймер автослайда
+  this.delayAfterAction = 10000; // Задержка после действия перед автослайдом
+  this.width = 300; // Ширина
+  this.height = 200; // Высота
+  this.controlsImages = { // Картинки для стрелочек
     left: 'img/left.png',
     right:'img/right.png'
   };
-  this.m = 20;
+  this.dotsMargin = 20; // Расстояние между точками
+  this.touchDifferenceToSlide = 40; // Длина пути пальца для слайда
+  this.dotsRadius = 7; // Радиус точки
+  this.dotsBorder = 4; // Граница точки
 }
 
 function slider_dot(papa, id, br, r, color, bcolor) {
@@ -428,9 +429,10 @@ function slider_dot(papa, id, br, r, color, bcolor) {
     zis.position = function() {
       return ( zis.papa.options.width / 2 -
                ( zis.papa.dots.length * (zis.radius + zis.border_weight) * 2 +
-               (zis.papa.dots.length - 1) * zis.papa.options.m ) / 2 ) +
-             (zis.id * ((zis.radius + zis.border_weight) * 2 +
-              zis.papa.options.m));
+               (
+                 zis.papa.dots.length - 1) * zis.papa.options.dotsMargin ) / 2
+               ) + (zis.id * ((zis.radius + zis.border_weight) * 2 +
+              zis.papa.options.dotsMargin));
     };
     zis.invert = function(non_r, non_c) {
       if(!non_r)
