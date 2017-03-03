@@ -9,8 +9,9 @@ window.onload = function(){
                         null, {
                           width: "auto",
                           height: "auto",
-                          dots: "true",
-                          controls: "true"
+                          dots: true,
+                          controls: true,
+                          timerMap: { even: 1000, odd: 4000 }
                         }).show();
   IIITYKA3 = new slider(document.getElementById("slider3"),
                         ['img/1.jpg',
@@ -18,7 +19,8 @@ window.onload = function(){
                          'img/2.jpg'],
                         { width: 600, height: 450,
                           dotsBorder: 10,
-                          controls: "true", dots: "true" }).show();
+                          controls: true, dots: true
+                        }).show();
   setTimeout(function() { IIITYKA1.show(); IIITYKA3.show(); }, 3000);
 
 };
@@ -66,6 +68,8 @@ window.onload = function(){
 // touchDifferenceToSlide = 40 - Длина пути пальца для слайда
 // dotsRadius = 7 - Радиус точки
 // dotsBorder = 4 - Граница точки
+// timerMap = object { even: 1000, odd: 1000 } - Карта для автослайда. even -
+//                                              чётные слайды, odd - нечётные.
 //
 // Инициализация производится методом .show(). Он так же возвращает ссылку
 // на объект, так что можно вызывать прям вместе с конструктором. Но

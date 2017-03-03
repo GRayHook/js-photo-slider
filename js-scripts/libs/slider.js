@@ -21,9 +21,9 @@ function slider(div, imgs, flags){
   zis.n_cur = 0;
 
   zis.options = new slider_opts();
-  if(typeof flags == "object")
+  if (typeof flags == "object")
     Object.assign(zis.options, flags);
-  else{
+  else {
     if(flags !== null) // Парсим строку с флагами
       while(flags !== ""){
         var c = pop_symbol(flags);
@@ -95,6 +95,10 @@ function slider(div, imgs, flags){
         }
       }
   }
+
+  if (zis.options.timerMap !== null)
+    zis.options.timerAutoSlide = zis.options.timerMap.even;
+
   if (zis.options.width == "auto")
     zis.options.width = max_width_height_of_dochkas(zis.div)[0];
   if (zis.options.height == "auto")
@@ -240,11 +244,25 @@ function slider(div, imgs, flags){
 
     if(zis.options.touches)
       zis.touches.touches_addEvnts(zis.hldr);
+
     return zis;
   };
 
   zis.start_timer = function() {
-    zis.timerAutoSlide_id = setInterval( function() { zis.next(); }, zis.options.timerAutoSlide );
+    var timer1 = zis.options.timerAutoSlide; // timer1. 1 - патамушта
+    zis.timerAutoSlide_id = setTimeout( function autoSlide() {
+
+      zis.next();
+
+      if (zis.options.timerMap !== null)
+        if (zis.n_cur % 2 === 0)
+          timer1 = zis.options.timerMap.even;
+        else
+          timer1 = zis.options.timerMap.odd;
+
+      zis.timerAutoSlide_id = setTimeout(autoSlide, timer1);
+
+    }, timer1);
   };
   zis.stop_timer = function() {
     clearInterval(zis.timerAutoSlide_id);
@@ -386,6 +404,7 @@ function slider_opts(){ // Конструктор опций для слайде
   this.touchDifferenceToSlide = 40; // Длина пути пальца для слайда
   this.dotsRadius = 7; // Радиус точки
   this.dotsBorder = 4; // Граница точки
+  this.timerMap = null; // Карта таймеров для слайда
 }
 
 function slider_dot(papa, id, br, r, color, bcolor) {
@@ -503,7 +522,6 @@ function max_width_height_of_dochkas(divka){
       result[0] = elem.offsetWidth;
     if (elem.offsetHeight > result[1])
       result[1] = elem.offsetHeight;
-    console.log(elem.offsetWidth + " - " + elem.offsetHeight);
   });
   return result;
 }
