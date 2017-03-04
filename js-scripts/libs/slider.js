@@ -104,6 +104,25 @@ function slider(div, imgs, flags){
   if (zis.options.height == "auto")
     zis.options.height = max_width_height_of_dochkas(zis.div)[1];
 
+  zis.goto = function(n) {
+    var i = n - zis.n_cur;
+    if (n < zis.imgs.length && 0 <= n && i !== 0){
+      var funct;
+      zis.stop_timer();
+      zis.start_timer();
+      if (i > 0)
+        funct = zis.next;
+      else {
+        funct = zis.prev;
+        i = -i;
+      }
+      do {
+        funct();
+        i--;
+      } while (i !== 0);
+    } else
+      console.log("Error: slider.goto");
+  };
   zis.next = function() {
     if(zis.n_cur === zis.imgs.length - 1)
       zis.prev_to_beg();
@@ -440,6 +459,9 @@ function slider_dot(papa, id, br, r, color, bcolor) {
       divka.style.left = zis.position() + 'px';
       divka.style.top = zis.papa.options.height - 15 -
                         (zis.radius + zis.border_weight) * 2 + 'px';
+      divka.onclick = function() {
+        zis.papa.goto(zis.id);
+      };
       batya.appendChild(divka);
       // zis.papa.hldr.appendChild(divka);
       zis.div = divka;
