@@ -8,7 +8,7 @@ function slider(div, imgs, flags){
     alert("Обшибка типа");
   zis.imgs = []; // Массив ссылок на фотки
   if(!imgs)
-    zis.div.childNodes.forEach( function(elem) {
+    nodeForEach.call(zis.div.childNodes, function(elem) {
       if(elem.tagName == "IMG"){
         zis.imgs.push(elem.src);
         //zis.div.removeChild(elem);
@@ -212,7 +212,7 @@ function slider(div, imgs, flags){
                     zis.options.dotsRadius));
     });
 
-    zis.div.childNodes.forEach( function(elem) {
+    nodeForEach.call(zis.div.childNodes, function(elem) {
       if (elem.tagName == "IMG" || elem.tagName == "DIV")
         elem.remove();
     } );
@@ -355,7 +355,7 @@ function slider(div, imgs, flags){
                                         zis.n_cur);
         elem3.style.transition = '';
       } else {
-        zis.div.childNodes.forEach( function(elem) {
+        nodeForEach.call(zis.div.childNodes, function(elem) {
           if(elem.tagName == "IMG" || elem.tagName == "DIV")
             elem.style.transition = '';
         } );
@@ -539,11 +539,13 @@ function max_width_height_of_dochkas(divka){
   result = [];
   result[0] = 0;
   result[1] = 0;
-  divka.childNodes.forEach( function(elem) {
+  nodeForEach.call(divka.childNodes, function(elem) {
     if (elem.offsetWidth > result[0])
       result[0] = elem.offsetWidth;
     if (elem.offsetHeight > result[1])
       result[1] = elem.offsetHeight;
-  });
+  } );
   return result;
 }
+
+var nodeForEach = Array.prototype.forEach;
