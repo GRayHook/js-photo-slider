@@ -214,7 +214,8 @@ function slider(div, imgs, flags){
 
     nodeForEach.call(zis.div.childNodes, function(elem) {
       if (elem.tagName == "IMG" || elem.tagName == "DIV")
-        elem.remove();
+        // elem.remove();
+        elem.style.display = 'none';
     } );
     zis.div.appendChild(crazy_frag);
 
