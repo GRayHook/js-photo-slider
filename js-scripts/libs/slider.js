@@ -126,9 +126,10 @@ function slider(div, imgs, flags){
       console.log("Error: slider.goto");
   };
   zis.next = function() {
-    if(zis.n_cur === zis.imgs.length - 1)
+    if(zis.n_cur === zis.imgs.length - 1){
       zis.prev_to_beg();
-    else {
+      zis.onSlideChanged(zis.n_cur);
+    } else {
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
               .style.marginLeft = '-' + zis.options.width + 'px';
       if(zis.options.dots)
@@ -138,11 +139,13 @@ function slider(div, imgs, flags){
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     }
+    // zis.onSlideChanged(zis.n_cur);
   };
   zis.prev = function() {
-    if(zis.n_cur === 0)
+    if(zis.n_cur === 0){
       zis.next_to_end();
-    else {
+      zis.onSlideChanged(zis.n_cur);
+    } else {
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
       .style.marginLeft = zis.options.width + 'px';
       if(zis.options.dots)
@@ -151,6 +154,7 @@ function slider(div, imgs, flags){
       .style.marginLeft = '0px';
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
+      // zis.onSlideChanged(zis.n_cur);
     }
   };
   zis.next_to_end = function() {
@@ -232,6 +236,7 @@ function slider(div, imgs, flags){
       zis.ctl.r.onload = function() {
         zis.ctl.r.onclick = function () {
           zis.next();
+          zis.onSlideChanged(zis.n_cur);
           if(zis.options.timerAutoSlide && zis.options.delayAfterAction)
             zis.delayAfterAction();
         };
@@ -244,9 +249,10 @@ function slider(div, imgs, flags){
       zis.ctl.l.onload = function() {
         zis.ctl.l.onclick = function () {
           zis.prev();
+          zis.onSlideChanged(zis.n_cur);
           if(zis.options.timerAutoSlide && zis.options.delayAfterAction)
-            zis.delayAfterAction();
-        };
+              zis.delayAfterAction();
+          };
         //zis.ctl.l.ontouchstart = zis.ctl.l.onclick;
         zis.ctl.l.style.top = zis.options.height / 2 -
                                zis.ctl.l.offsetHeight / 2 + 'px';
@@ -316,6 +322,7 @@ function slider(div, imgs, flags){
           difference = zis.touches.posX - zis.touches.posX2;
       if(difference < -zis.options.touchDifferenceToSlide) {
         zis.next();
+        zis.onSlideChanged(zis.n_cur);
         if(zis.imgs.length > 2){
           if(zis.n_cur === 0)
             elem1 = document.getElementById(zis.div.id + "_slider-" +
@@ -341,6 +348,7 @@ function slider(div, imgs, flags){
         elem3.style.transition = '';
       } else if(difference > zis.options.touchDifferenceToSlide){
         zis.prev();
+        zis.onSlideChanged(zis.n_cur);
         if(zis.imgs.length > 2){
           if(zis.n_cur === (zis.imgs.length - 2))
             elem1 = document.getElementById(zis.div.id + "_slider-" + 0);
@@ -411,6 +419,10 @@ function slider(div, imgs, flags){
       elem2.style.marginLeft =  0 + zis.touches.posX - zis.touches.posX2 + 'px';
     };
   }
+
+  zis.onSlideChanged = function(n) {
+    console.log('Теперь на ' + n + ' слайде.');
+  };
 }
 
 function slider_opts(){ // Конструктор опций для слайдера.
