@@ -116,10 +116,12 @@ function slider(div, imgs, flags){
         funct = zis.prev;
         i = -i;
       }
-      do {
+      for (;i > 0; i--){
         funct();
-        i--;
-      } while (i !== 0);
+        // i--;
+        console.log(i);
+      }
+
     } else
       console.log("Error: slider.goto");
   };
@@ -269,23 +271,27 @@ function slider(div, imgs, flags){
   };
 
   zis.start_timer = function() {
-    var timer1 = zis.options.timerAutoSlide; // timer1. 1 - патамушта
-    zis.timerAutoSlide_id = setTimeout( function autoSlide() {
+    if (zis.options.timerAutoSlide){
+      var timer1 = zis.options.timerAutoSlide; // timer1. 1 - патамушта
+      zis.timerAutoSlide_id = setTimeout( function autoSlide() {
 
-      zis.next();
+        zis.next();
 
-      if (zis.options.timerMap !== null)
+        if (zis.options.timerMap !== null)
         if (zis.n_cur % 2 === 0)
-          timer1 = zis.options.timerMap.even;
+        timer1 = zis.options.timerMap.even;
         else
-          timer1 = zis.options.timerMap.odd;
+        timer1 = zis.options.timerMap.odd;
 
-      zis.timerAutoSlide_id = setTimeout(autoSlide, timer1);
+        zis.timerAutoSlide_id = setTimeout(autoSlide, timer1);
 
-    }, timer1);
+      }, timer1);
+    }
   };
   zis.stop_timer = function() {
-    clearInterval(zis.timerAutoSlide_id);
+    if (zis.options.timerAutoSlide){
+      clearInterval(zis.timerAutoSlide_id);
+    }
   };
   zis.delayAfterAction = function() {
     zis.stop_timer();
