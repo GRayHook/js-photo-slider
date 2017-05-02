@@ -128,7 +128,6 @@ function slider(div, imgs, flags){
   zis.next = function() {
     if(zis.n_cur === zis.imgs.length - 1){
       zis.prev_to_beg();
-      zis.onSlideChanged(zis.n_cur);
     } else {
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
               .style.marginLeft = '-' + zis.options.width + 'px';
@@ -144,7 +143,6 @@ function slider(div, imgs, flags){
   zis.prev = function() {
     if(zis.n_cur === 0){
       zis.next_to_end();
-      zis.onSlideChanged(zis.n_cur);
     } else {
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
       .style.marginLeft = zis.options.width + 'px';
