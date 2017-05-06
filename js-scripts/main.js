@@ -4,7 +4,7 @@ window.onload = function(){
                        ['img/1.jpg',
                         'img/2.jpg',
                         'img/3.jpg'],
-                       't(500)f');
+                       't(500)fzw(400)h(100)');
   IIITYKA2 = new slider(document.getElementById("slider2"),
                         null, {
                           width: "auto",

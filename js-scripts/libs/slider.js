@@ -133,7 +133,7 @@ function slider(div, imgs, flags){
       zis.prev_to_beg();
     } else {
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
-              .style.marginLeft = '-' + zis.options.width + 'px';
+              .style.marginLeft = '-' + zis.hldr.style.width;
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
       document.getElementById(zis.div.id + "_slider-" + (++zis.n_cur))
@@ -148,7 +148,7 @@ function slider(div, imgs, flags){
       zis.next_to_end();
     } else {
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
-      .style.marginLeft = zis.options.width + 'px';
+      .style.marginLeft = zis.hldr.style.width;
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
       document.getElementById(zis.div.id + "_slider-" + (--zis.n_cur))
@@ -173,11 +173,58 @@ function slider(div, imgs, flags){
     zis.n_cur = 0;
     zis.div.style.width = zis.options.width + 'px';
     zis.div.style.height = zis.options.height + 'px';
-    var crazy_frag = document.createDocumentFragment();
-    var holder = document.createElement("div");
 
+    var crazy_frag = document.createDocumentFragment();
+
+    // Работа с холдером для изображений:
+    var holder = document.createElement("div");
     holder.id = zis.div.id + '_slider_holder';
     holder.classList.add("slider_holder");
+    zis.hldr = holder;
+    zis.hldr.style.width = zis.options.width + 'px';
+    zis.hldr.style.height = zis.options.height + 'px';
+    if (zis.options.zoom) {
+      // Вмещаем слайды в заданные размеры
+      // Если получится, то ранее заданные, размеры перезапишутся
+      var all_width = zis.options.width,
+        all_height = zis.options.height,
+        all_prop = all_width / all_height,
+        i = 0,
+        imgka,
+        slide_prop,
+        boolka = false;
+      try { // Обработаем исключение на случай недостатка фоток
+        while (!boolka) {
+        // Находим подходящую для расчётов фотку
+          imgka = zis.imgs[i++];
+          if (typeof imgka == "string") {
+            imgka = document.createElement("img");
+            imgka.src = zis.imgs[i-1];
+          }
+          if (imgka.tagName == "IMG") {
+            boolka = true;
+          } else {
+            console.log("Тут у " + zis.div.id + " фота - не фота");
+          }
+        }
+      } catch (e) {
+        console.log("Тут у " + zis.div.id + " фоты кончились");
+      }
+      if (boolka) {
+        slide_prop = imgka.naturalWidth / imgka.naturalHeight;
+        if (all_prop < slide_prop) {
+          zis.hldr.style.width = all_width + 'px';
+          var prop_height = all_width / slide_prop;
+          zis.hldr.style.height = prop_height + 'px';
+          zis.hldr.style.marginTop = ((all_height - prop_height) / 2) + 'px';
+        } else {
+          zis.hldr.style.height = all_height;
+          var prop_width = all_height * slide_prop;
+          zis.hldr.style.width = prop_width + 'px';
+          zis.hldr.style.marginLeft = ((all_width - prop_width) / 2) + 'px';
+        }
+      }
+    }
     crazy_frag.appendChild(holder);
 
     if(zis.options.controls){
@@ -209,11 +256,11 @@ function slider(div, imgs, flags){
         imgka.style.marginTop = '0px';
         imgka.style.marginLeft = '0px';
       } else {
-        imgka.style.marginTop = '-' + zis.options.height + 'px';
-        imgka.style.marginLeft = zis.options.width + 'px';
+        imgka.style.marginTop = '-' + zis.hldr.style.height;
+        imgka.style.marginLeft = zis.hldr.style.width;
       }
-      imgka.style.width = zis.options.width + 'px';
-      imgka.style.height = zis.options.height + 'px';
+      imgka.style.width = zis.hldr.style.width;
+      imgka.style.height = zis.hldr.style.height;
       holder.appendChild(imgka);
 
       zis.dots.push(new slider_dot(zis, n++, zis.options.dotsBorder,
@@ -225,28 +272,10 @@ function slider(div, imgs, flags){
         // elem.remove();
         elem.style.display = 'none';
     } );
-    
+
     zis.div.innerHTML = "";//Дикий колхоз (removeChild() не ремувит все чайлды)
     zis.div.appendChild(crazy_frag);
 
-    zis.hldr = document.getElementById(zis.div.id + '_slider_holder');
-    if (zis.options.zoom) {
-      // Вмещаем слайды в заданные размеры
-      var all_width = document.documentElement.clientWidth,
-      all_height = document.documentElement.clientheight,
-      all_prop = all_width / all_height,
-      slide_prop = zis.options.width / zis.options.height;
-      if (all_prop < slide_prop) {
-        zis.hldr.style.width = all_width + 'px';
-        zis.hldr.style.height = (all_width / slide_prop) + 'px';
-      } else {
-        zis.hldr.style.height = all_height;
-        zis.hldr.style.width = (all_height * slide_prop) + 'px';
-      }
-    } else {
-      zis.hldr.style.width = zis.options.width + 'px';
-      zis.hldr.style.height = zis.options.height + 'px';
-    }
 
     if(zis.options.controls){
       zis.ctl = {};
