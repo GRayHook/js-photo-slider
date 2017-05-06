@@ -38,6 +38,9 @@ function slider(div, imgs, flags){
           case 'f': // Запретить палец
             zis.options.touches = true;
             break;
+          case 'z': // Вместить в размер
+            zis.options.zoom = true;
+            break;
           case 'w': // Установить ширину, например: w(200)
             if (get_from_skobki(flags) == "a")
               zis.options.width = "auto";
@@ -164,7 +167,8 @@ function slider(div, imgs, flags){
       zis.prev();
   };
 
-  zis.show = function() { // Метод для инициализации слайдера.
+  zis.show = function() {
+    // Метод для отрисовки слайдера.
     var n = 0;
     zis.n_cur = 0;
     zis.div.style.width = zis.options.width + 'px';
@@ -221,11 +225,28 @@ function slider(div, imgs, flags){
         // elem.remove();
         elem.style.display = 'none';
     } );
+    
+    zis.div.innerHTML = "";//Дикий колхоз (removeChild() не ремувит все чайлды)
     zis.div.appendChild(crazy_frag);
 
     zis.hldr = document.getElementById(zis.div.id + '_slider_holder');
-    zis.hldr.style.width = zis.options.width + 'px';
-    zis.hldr.style.height = zis.options.height + 'px';
+    if (zis.options.zoom) {
+      // Вмещаем слайды в заданные размеры
+      var all_width = document.documentElement.clientWidth,
+      all_height = document.documentElement.clientheight,
+      all_prop = all_width / all_height,
+      slide_prop = zis.options.width / zis.options.height;
+      if (all_prop < slide_prop) {
+        zis.hldr.style.width = all_width + 'px';
+        zis.hldr.style.height = (all_width / slide_prop) + 'px';
+      } else {
+        zis.hldr.style.height = all_height;
+        zis.hldr.style.width = (all_height * slide_prop) + 'px';
+      }
+    } else {
+      zis.hldr.style.width = zis.options.width + 'px';
+      zis.hldr.style.height = zis.options.height + 'px';
+    }
 
     if(zis.options.controls){
       zis.ctl = {};
@@ -428,6 +449,7 @@ function slider_opts(){ // Конструктор опций для слайде
   this.dots = false; // Включить точки
   this.controls = false; // Включить стрелки
   this.touches = true; // Включить управление тачскрином
+  this.zoom = false;
   this.timerAutoSlide = 5000; // Таймер автослайда
   this.delayAfterAction = 10000; // Задержка после действия перед автослайдом
   this.width = 300; // Ширина
@@ -444,6 +466,7 @@ function slider_opts(){ // Конструктор опций для слайде
 }
 
 function slider_dot(papa, id, br, r, color, bcolor) {
+  // Точки для обозначения текущей фоты
   if(!id && id !== 0){
     console.log("Потерялся id у точки");
   }else{
@@ -459,6 +482,7 @@ function slider_dot(papa, id, br, r, color, bcolor) {
     zis.bcolor = bcolor || '#000';
 
     zis.show = function() {
+      // Рисует точки
       var batya;
       if(!(batya = document.getElementById(
                    zis.papa.div.id + "_slider_dot_holder")))
@@ -480,11 +504,11 @@ function slider_dot(papa, id, br, r, color, bcolor) {
         zis.papa.goto(zis.id);
       };
       batya.appendChild(divka);
-      // zis.papa.hldr.appendChild(divka);
       zis.div = divka;
       return zis;
     };
     zis.position = function() {
+      // Вычисляет крайнее положение точек
       return ( zis.papa.options.width / 2 -
                ( zis.papa.dots.length * (zis.radius + zis.border_weight) * 2 +
                (
@@ -493,6 +517,7 @@ function slider_dot(papa, id, br, r, color, bcolor) {
               zis.papa.options.dotsMargin));
     };
     zis.invert = function(non_r, non_c) {
+      // Инвертирует точки
       if(!non_r)
         zis.change(null, null, zis.bcolor, zis.color);
       if(!non_c)
@@ -502,6 +527,7 @@ function slider_dot(papa, id, br, r, color, bcolor) {
                     " хочет инвертироваться с обоими флагами");
     };
     zis.change = function(r, br, color, bcolor) {
+      // Перерисовывет точки
       if(r){
         zis.radius = r;
         zis.div.style.borderRadius = zis.radius + zis.border_weight + 'px';
