@@ -134,10 +134,14 @@ function slider(div, imgs, flags){
     } else {
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
               .style.marginLeft = '-' + zis.hldr.style.width;
+      document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
+              .style.transition = '';
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
       document.getElementById(zis.div.id + "_slider-" + (++zis.n_cur))
       .style.marginLeft = '0px';
+      document.getElementById(zis.div.id + "_slider-" + (zis.n_cur))
+      .style.transition = '';
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     }
@@ -165,6 +169,57 @@ function slider(div, imgs, flags){
   zis.prev_to_beg = function() {
     while(zis.n_cur !== 0)
       zis.prev();
+  };
+
+  zis.visibles = function(arr_of_nums, act, boolka_invert) {
+    // Меняет значение display на 'none' если act = 'hide', и на 'visible',
+    // если act = 'show'.
+    // boolka_invert - если true, то метод обрабатывает все картинки, кроме
+    // указанных, в противном случае - только указанные
+    var len = zis.imgs.length;
+    if (boolka_invert) {
+      var new_arr = [];
+      for (var k = 0; k < len; k++) {
+        if (arr_of_nums.indexOf(k) == -1) {
+          new_arr += k;
+        }
+      }
+      arr_of_nums = new_arr;
+    }
+    for (var i in arr_of_nums) {
+      if (i < len) {
+        var elem = document.getElementById(zis.div.id + '_slider-' + arr_of_nums[i]);
+        if (act == 'hide') {
+          elem.style.display = 'none';
+        } else if (act == 'show') {
+          elem.style.display = 'block';
+        }
+      } else {
+        console.log("Тут у " + zis.div.id + " hide_pics оступился");
+      }
+    }
+    zis.mk_correct();
+  };
+
+  zis.mk_correct = function() {
+    var boolka = false;
+    nodeForEach.call(zis.hldr.childNodes, function(elem) {
+      var indof = elem.id.indexOf(zis.div.id + '_slider-');
+        if (indof === 0 && elem.style.display == 'block') {
+          elem.style.transition = 'none';
+        }
+    });
+    nodeForEach.call(zis.hldr.childNodes, function(elem) {
+      var indof = elem.id.indexOf(zis.div.id + '_slider-');
+      if (indof === 0 && elem.style.display == 'block') {
+        if (boolka) {
+          elem.style.marginTop = '-' + zis.hldr.style.height;
+        } else {
+          elem.style.marginTop = '0';
+          boolka = true;
+        }
+      }
+    });
   };
 
   zis.show = function() {
@@ -242,7 +297,7 @@ function slider(div, imgs, flags){
 
     zis.dots = [];
 
-    zis.imgs.forEach(function(elem) {
+    zis.imgs.forEach(function(elem) { // Работа со слайдами
       var imgka;
       if (typeof elem == "string") {
         imgka = document.createElement("img");
@@ -259,6 +314,7 @@ function slider(div, imgs, flags){
         imgka.style.marginTop = '-' + zis.hldr.style.height;
         imgka.style.marginLeft = zis.hldr.style.width;
       }
+      imgka.style.display = 'block';
       imgka.style.width = zis.hldr.style.width;
       imgka.style.height = zis.hldr.style.height;
       holder.appendChild(imgka);
