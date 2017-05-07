@@ -130,27 +130,38 @@ function slider(div, imgs, flags){
   };
   zis.next = function() {
     if(zis.n_cur === zis.imgs.length - 1){
-      zis.prev_to_beg();
-    } else {
+      // zis.prev_to_beg();
+      zis.visibles([], 'hide', true);
+      zis.visibles([zis.n_cur, 0], 'show');
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
-              .style.marginLeft = '-' + zis.hldr.style.width;
-      document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
-              .style.transition = '';
+      .style.marginLeft = zis.hldr.style.width;
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
-      document.getElementById(zis.div.id + "_slider-" + (++zis.n_cur))
+      document.getElementById(zis.div.id + "_slider-" + 0)
       .style.marginLeft = '0px';
-      document.getElementById(zis.div.id + "_slider-" + (zis.n_cur))
-      .style.transition = '';
+      if(zis.options.dots)
+        zis.dots[zis.n_cur].invert();
+    } else {
+      zis.visibles([1], 'hide', true);
+      zis.visibles([zis.n_cur, zis.n_cur + 1, zis.n_cur + 2], 'show');
+      var elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
+      // elem.style.transition = '';
+      elem.style.marginLeft = '-' + zis.hldr.style.width;
+      if(zis.options.dots)
+        zis.dots[zis.n_cur].invert();
+      elem = document.getElementById(zis.div.id + "_slider-" + (++zis.n_cur));
+      // elem.style.transition = '';
+      elem.style.marginLeft = '0px';
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     }
-    // zis.onSlideChanged(zis.n_cur);
   };
   zis.prev = function() {
     if(zis.n_cur === 0){
       zis.next_to_end();
     } else {
+      zis.visibles([], 'hide', true);
+      zis.visibles([zis.n_cur, zis.n_cur - 1], 'show');
       document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
       .style.marginLeft = zis.hldr.style.width;
       if(zis.options.dots)
@@ -176,26 +187,27 @@ function slider(div, imgs, flags){
     // если act = 'show'.
     // boolka_invert - если true, то метод обрабатывает все картинки, кроме
     // указанных, в противном случае - только указанные
+    // TODO: А теперь ебани это так, чтобы оставить видимыми только некоторые
+    // фоты
     var len = zis.imgs.length;
     if (boolka_invert) {
       var new_arr = [];
       for (var k = 0; k < len; k++) {
         if (arr_of_nums.indexOf(k) == -1) {
-          new_arr += k;
+          new_arr.push(k);
         }
       }
       arr_of_nums = new_arr;
     }
-    for (var i in arr_of_nums) {
-      if (i < len) {
+    for (var i = 0; i < len; i++) {
+      if (arr_of_nums[i] < len) {
+        console.log(arr_of_nums[i]);
         var elem = document.getElementById(zis.div.id + '_slider-' + arr_of_nums[i]);
         if (act == 'hide') {
           elem.style.display = 'none';
         } else if (act == 'show') {
           elem.style.display = 'block';
         }
-      } else {
-        console.log("Тут у " + zis.div.id + " hide_pics оступился");
       }
     }
     zis.mk_correct();
@@ -203,12 +215,12 @@ function slider(div, imgs, flags){
 
   zis.mk_correct = function() {
     var boolka = false;
-    nodeForEach.call(zis.hldr.childNodes, function(elem) {
-      var indof = elem.id.indexOf(zis.div.id + '_slider-');
-        if (indof === 0 && elem.style.display == 'block') {
-          elem.style.transition = 'none';
-        }
-    });
+    // nodeForEach.call(zis.hldr.childNodes, function(elem) {
+    //   var indof = elem.id.indexOf(zis.div.id + '_slider-');
+    //     if (indof === 0 && elem.style.display == 'block') {
+    //       elem.style.transition = 'none';
+    //     }
+    // });
     nodeForEach.call(zis.hldr.childNodes, function(elem) {
       var indof = elem.id.indexOf(zis.div.id + '_slider-');
       if (indof === 0 && elem.style.display == 'block') {
