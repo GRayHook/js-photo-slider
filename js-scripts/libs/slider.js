@@ -103,9 +103,9 @@ function slider(div, imgs, flags){
     zis.options.timerAutoSlide = zis.options.timerMap.even;
 
   if (zis.options.width == "auto")
-    zis.options.width = max_width_height_of_dochkas(zis.div)[0];
+    zis.options.width = max_size_of_dochkas(zis.div)[0];
   if (zis.options.height == "auto")
-    zis.options.height = max_width_height_of_dochkas(zis.div)[1];
+    zis.options.height = max_size_of_dochkas(zis.div)[1];
 
   zis.goto = function(n) {
     var i = n - zis.n_cur;
@@ -129,58 +129,105 @@ function slider(div, imgs, flags){
       console.log("Error: slider.goto");
   };
   zis.next = function() {
+    // Слайдить вперёд
+    var elem;
     if(zis.n_cur === zis.imgs.length - 1){
+      // Переход в с последнего на первый:
       // zis.prev_to_beg();
       zis.visibles([], 'hide', true);
-      zis.visibles([zis.n_cur, 0], 'show');
-      document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
-      .style.marginLeft = zis.hldr.style.width;
+      zis.visibles([zis.imgs.length - 1, 0, 1], 'show');
+
+      if (zis.imgs.length > 1) {
+        elem = document.getElementById(zis.div.id + "_slider-" + 1);
+        elem.style.transition = 'none';
+        elem.style.marginLeft = zis.hldr.style.width;
+        elem.style.transition = '';
+      }
+
+      elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
+      elem.style.marginLeft = zis.hldr.style.width;
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
-      document.getElementById(zis.div.id + "_slider-" + 0)
-      .style.marginLeft = '0px';
+      zis.n_cur = 0;
+      elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
+      elem.style.marginLeft = '0px';
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     } else {
-      zis.visibles([1], 'hide', true);
-      zis.visibles([zis.n_cur, zis.n_cur + 1, zis.n_cur + 2], 'show');
-      var elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
-      // elem.style.transition = '';
+      // Переход на следующий
+      var shows = [zis.n_cur, zis.n_cur + 1, zis.n_cur + 2];
+      if (zis.n_cur == zis.imgs.length - 2) {
+        shows.push(0);
+      }
+      zis.visibles([], 'hide', true);
+      zis.visibles(shows, 'show');
+
+      elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
       elem.style.marginLeft = '-' + zis.hldr.style.width;
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
       elem = document.getElementById(zis.div.id + "_slider-" + (++zis.n_cur));
-      // elem.style.transition = '';
       elem.style.marginLeft = '0px';
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     }
   };
   zis.prev = function() {
+    // Слайдить назад
+    var elem;
     if(zis.n_cur === 0){
-      zis.next_to_end();
-    } else {
+      // zis.next_to_end();
+      // Переход с первого на последний:
+      var last_elem = zis.imgs.length - 1;
       zis.visibles([], 'hide', true);
-      zis.visibles([zis.n_cur, zis.n_cur - 1], 'show');
-      document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
-      .style.marginLeft = zis.hldr.style.width;
+      zis.visibles([0, last_elem, last_elem - 1], 'show');
+
+      if (zis.imgs.length > 1) {
+        var indofelem = zis.div.id + "_slider-" + (last_elem - 1);
+        elem = document.getElementById(indofelem);
+        elem.style.transition = 'none';
+        elem.style.marginLeft = '-' + zis.hldr.style.width;
+        elem.style.transition = '';
+      }
+
+      elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
+      elem.style.marginLeft = '-' + zis.hldr.style.width;
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
-      document.getElementById(zis.div.id + "_slider-" + (--zis.n_cur))
-      .style.marginLeft = '0px';
+      zis.n_cur = last_elem;
+      elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
+      elem.style.marginLeft = '0px';
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
-      // zis.onSlideChanged(zis.n_cur);
+    } else {
+      // Переход на предыдущий
+      var shows = [zis.n_cur, zis.n_cur - 1, zis.n_cur - 2];
+      if (zis.n_cur == 1) {
+        shows.push(zis.imgs.length - 1);
+      }
+      zis.visibles([], 'hide', true);
+      zis.visibles(shows, 'show');
+
+      elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
+      elem.style.marginLeft = zis.hldr.style.width;
+      if(zis.options.dots)
+        zis.dots[zis.n_cur].invert();
+      elem = document.getElementById(zis.div.id + "_slider-" + (--zis.n_cur));
+      elem.style.marginLeft = '0px';
+      if(zis.options.dots)
+        zis.dots[zis.n_cur].invert();
     }
   };
-  zis.next_to_end = function() {
-    while(zis.n_cur != zis.imgs.length - 1)
-      zis.next();
-  };
-  zis.prev_to_beg = function() {
-    while(zis.n_cur !== 0)
-      zis.prev();
-  };
+
+  // NOTE: Следующие методы депреканутые, но пока пусть лежат
+  // zis.next_to_end = function() {
+  //   while(zis.n_cur != zis.imgs.length - 1)
+  //     zis.next();
+  // };
+  // zis.prev_to_beg = function() {
+  //   while(zis.n_cur !== 0)
+  //     zis.prev();
+  // };
 
   zis.visibles = function(arr_of_nums, act, boolka_invert) {
     // Меняет значение display на 'none' если act = 'hide', и на 'visible',
@@ -200,9 +247,9 @@ function slider(div, imgs, flags){
       arr_of_nums = new_arr;
     }
     for (var i = 0; i < len; i++) {
-      if (arr_of_nums[i] < len) {
-        console.log(arr_of_nums[i]);
-        var elem = document.getElementById(zis.div.id + '_slider-' + arr_of_nums[i]);
+      if (arr_of_nums[i] < len && arr_of_nums[i] > -1) {
+        var idofelem = zis.div.id + '_slider-' + arr_of_nums[i];
+        var elem = document.getElementById(idofelem);
         if (act == 'hide') {
           elem.style.display = 'none';
         } else if (act == 'show') {
@@ -214,21 +261,25 @@ function slider(div, imgs, flags){
   };
 
   zis.mk_correct = function() {
+    // Правит margin-top так, что все элементы находятся на одной линии
     var boolka = false;
-    // nodeForEach.call(zis.hldr.childNodes, function(elem) {
-    //   var indof = elem.id.indexOf(zis.div.id + '_slider-');
-    //     if (indof === 0 && elem.style.display == 'block') {
-    //       elem.style.transition = 'none';
-    //     }
-    // });
     nodeForEach.call(zis.hldr.childNodes, function(elem) {
-      var indof = elem.id.indexOf(zis.div.id + '_slider-');
-      if (indof === 0 && elem.style.display == 'block') {
-        if (boolka) {
-          elem.style.marginTop = '-' + zis.hldr.style.height;
-        } else {
-          elem.style.marginTop = '0';
-          boolka = true;
+      var str4ka = zis.div.id + '_slider-',
+        indof = elem.id.indexOf(str4ka);
+      if (indof === 0) {
+        if (elem.style.display == 'block')
+          if (boolka) {
+            elem.style.marginTop = '-' + zis.hldr.style.height;
+          } else {
+            elem.style.marginTop = '0';
+            boolka = true;
+        }
+        if (elem.id.slice(str4ka.length) < zis.n_cur) {
+          console.log("до");
+          elem.style.marginLeft = '-' + zis.hldr.style.width;
+        } else if (elem.id.slice(str4ka.length) > zis.n_cur) {
+          console.log("после");
+          elem.style.marginLeft = zis.hldr.style.width;
         }
       }
     });
@@ -326,7 +377,7 @@ function slider(div, imgs, flags){
         imgka.style.marginTop = '-' + zis.hldr.style.height;
         imgka.style.marginLeft = zis.hldr.style.width;
       }
-      imgka.style.display = 'block';
+      // imgka.style.display = 'block';
       imgka.style.width = zis.hldr.style.width;
       imgka.style.height = zis.hldr.style.height;
       holder.appendChild(imgka);
@@ -388,6 +439,9 @@ function slider(div, imgs, flags){
 
     if(zis.options.touches)
       zis.touches.touches_addEvnts(zis.hldr);
+
+    zis.visibles([], 'hide', true);
+    zis.visibles([0, 1, zis.imgs.length - 1], 'show');
 
     return zis;
   };
@@ -675,7 +729,7 @@ function drop_symbol(str4ka){
 function pop_symbol(str4ka){
   return str4ka[0];
 }
-function max_width_height_of_dochkas(divka){
+function max_size_of_dochkas(divka){
   result = [];
   result[0] = 0;
   result[1] = 0;
