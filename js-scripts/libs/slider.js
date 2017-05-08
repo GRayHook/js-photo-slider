@@ -399,7 +399,7 @@ function slider(div, imgs, flags){
       var ctl_fullscreen = document.createElement("img");
       ctl_fullscreen.id = zis.div.id + 'slider_ctl_f';
       ctl_fullscreen.classList.add("slider_ctl");
-      ctl_fullscreen.src = zis.options.controlsImages.right;
+      ctl_fullscreen.src = zis.options.controlsImages.fullScreen;
       holder.appendChild(ctl_fullscreen);
     }
     zis.dots = [];
@@ -662,7 +662,8 @@ function slider_opts(){ // Конструктор опций для слайде
   this.height = 200; // Высота
   this.controlsImages = { // Картинки для стрелочек
     left: 'img/left.png',
-    right:'img/right.png'
+    right:'img/right.png',
+    fullScreen:'img/fullscreen.png'
   };
   this.dotsMargin = 20; // Расстояние между точками
   this.touchDifferenceToSlide = 40; // Длина пути пальца для слайда
