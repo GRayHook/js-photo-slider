@@ -41,6 +41,9 @@ function slider(div, imgs, flags){
           case 'z': // Вместить в размер
             zis.options.zoom = true;
             break;
+          case 's': // Полный экран
+            zis.options.fullScreen = true;
+            break;
           case 'w': // Установить ширину, например: w(200)
             if (get_from_skobki(flags) == "a")
               zis.options.width = "auto";
@@ -106,6 +109,40 @@ function slider(div, imgs, flags){
     zis.options.width = max_size_of_dochkas(zis.div)[0];
   if (zis.options.height == "auto")
     zis.options.height = max_size_of_dochkas(zis.div)[1];
+
+  if (zis.options.fullScreen) {
+    zis.toggleFullScreen = function() {
+      var boolka = !document.fullscreenElement;
+      boolka = boolka && !document.mozFullScreenElement;
+      boolka = boolka && !document.webkitFullscreenElement;
+      if (boolka) {
+        if (zis.div.requestFullscreen) {
+          zis.div.requestFullscreen();
+        } else if (zis.div.mozRequestFullScreen) {
+          zis.div.mozRequestFullScreen();
+        } else if (zis.div.webkitRequestFullscreen) {
+          zis.div.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+        zis.options.old_width = zis.options.width;
+        zis.options.width = screen.width;
+        zis.options.old_height = zis.options.height;
+        zis.options.height = screen.height;
+        zis.show();
+      } else {
+        if (document.cancelFullScreen) {
+          document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen();
+        }
+        zis.options.width = zis.options.old_width;
+        zis.options.height = zis.options.old_height;
+        zis.show();
+      }
+    };
+  }
+
 
   zis.goto = function(n) {
     var i = n - zis.n_cur;
@@ -358,6 +395,13 @@ function slider(div, imgs, flags){
       holder.appendChild(ctl_right);
     }
 
+    if(zis.options.fullScreen){
+      var ctl_fullscreen = document.createElement("img");
+      ctl_fullscreen.id = zis.div.id + 'slider_ctl_f';
+      ctl_fullscreen.classList.add("slider_ctl");
+      ctl_fullscreen.src = zis.options.controlsImages.right;
+      holder.appendChild(ctl_fullscreen);
+    }
     zis.dots = [];
 
     zis.imgs.forEach(function(elem) { // Работа со слайдами
@@ -395,6 +439,16 @@ function slider(div, imgs, flags){
     zis.div.innerHTML = "";//Дикий колхоз (removeChild() не ремувит все чайлды)
     zis.div.appendChild(crazy_frag);
 
+    if (zis.options.fullScreen) {
+      var elem = document.getElementById(zis.div.id + "slider_ctl_f");
+      elem.onload = function() {
+        elem.onclick = function () {
+          zis.toggleFullScreen();
+        };
+        elem.style.top = zis.hldr.offsetHeight - 35 + 'px';
+        elem.style.left = 15 + 'px';
+      };
+    }
 
     if(zis.options.controls){
       zis.ctl = {};
@@ -601,6 +655,7 @@ function slider_opts(){ // Конструктор опций для слайде
   this.controls = false; // Включить стрелки
   this.touches = true; // Включить управление тачскрином
   this.zoom = false;
+  this.fullScreen = false;
   this.timerAutoSlide = 5000; // Таймер автослайда
   this.delayAfterAction = 10000; // Задержка после действия перед автослайдом
   this.width = 300; // Ширина
