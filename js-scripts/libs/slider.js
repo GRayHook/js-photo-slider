@@ -408,9 +408,9 @@ function slider(div, imgs, flags){
             zis.delayAfterAction();
         };
         //zis.ctl.r.ontouchstart = zis.ctl.r.onclick;
-        zis.ctl.r.style.top = zis.options.height / 2 -
+        zis.ctl.r.style.top = zis.hldr.offsetHeight / 2 -
                                zis.ctl.r.offsetHeight / 2 + 'px';
-        zis.ctl.r.style.left = zis.options.width - zis.ctl.r.offsetWidth -
+        zis.ctl.r.style.left = zis.hldr.offsetWidth - zis.ctl.r.offsetWidth -
                                15 + 'px';
       };
       zis.ctl.l.onload = function() {
