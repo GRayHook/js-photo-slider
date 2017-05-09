@@ -256,16 +256,6 @@ function slider(div, imgs, flags){
     }
   };
 
-  // NOTE: Следующие методы депреканутые, но пока пусть лежат
-  // zis.next_to_end = function() {
-  //   while(zis.n_cur != zis.imgs.length - 1)
-  //     zis.next();
-  // };
-  // zis.prev_to_beg = function() {
-  //   while(zis.n_cur !== 0)
-  //     zis.prev();
-  // };
-
   zis.visibles = function(arr_of_nums, act, boolka_invert) {
     // Меняет значение display на 'none' если act = 'hide', и на 'visible',
     // если act = 'show'.
@@ -296,7 +286,6 @@ function slider(div, imgs, flags){
     }
     zis.mk_correct();
   };
-
   zis.mk_correct = function() {
     // Правит margin-top так, что все элементы находятся на одной линии
     var boolka = false;
@@ -600,18 +589,18 @@ function slider(div, imgs, flags){
         } );
         if(zis.n_cur !== 0)
           document.getElementById(zis.div.id + "_slider-" + (zis.n_cur - 1))
-                  .style.marginLeft = '-' + zis.options.width + 'px';
+                  .style.marginLeft = '-' + zis.hldr.style.width;
         else
           document.getElementById(zis.div.id + "_slider-" +
                                   (zis.imgs.length - 1))
-                  .style.marginLeft = '-' + zis.options.width + 'px';
+                  .style.marginLeft = '-' + zis.hldr.style.width;
 
         if(zis.n_cur !== (zis.imgs.length - 1))
           document.getElementById(zis.div.id + "_slider-" + (zis.n_cur + 1))
-                  .style.marginLeft = zis.options.width + 'px';
+                  .style.marginLeft = zis.hldr.style.width;
         else
           document.getElementById(zis.div.id + "_slider-" + '0')
-                  .style.marginLeft = zis.options.width + 'px';
+                  .style.marginLeft = zis.hldr.style.width;
 
         document.getElementById(zis.div.id + "_slider-" + zis.n_cur)
                 .style.marginLeft = '0px';
@@ -627,7 +616,7 @@ function slider(div, imgs, flags){
           elem1 = document.getElementById(zis.div.id + "_slider-" +
                                         (zis.n_cur - 1));
         elem1.style.transition = 'none';
-        elem1.style.marginLeft =  - zis.options.width + zis.touches.posX -
+        elem1.style.marginLeft =  - zis.hldr.offsetWidth + zis.touches.posX -
                                   zis.touches.posX2 + 'px';
         if(zis.n_cur === (zis.imgs.length - 1))
           elem3 = document.getElementById(zis.div.id + "_slider-" +  0);
@@ -635,7 +624,7 @@ function slider(div, imgs, flags){
           elem3 = document.getElementById(zis.div.id + "_slider-" +
                                         (zis.n_cur + 1));
         elem3.style.transition = 'none';
-        elem3.style.marginLeft =  zis.options.width + zis.touches.posX -
+        elem3.style.marginLeft =  zis.hldr.offsetWidth + zis.touches.posX -
                                   zis.touches.posX2 + 'px';
       }
       elem2 = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
