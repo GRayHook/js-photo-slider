@@ -301,10 +301,8 @@ function slider(div, imgs, flags){
             boolka = true;
         }
         if (elem.id.slice(str4ka.length) < zis.n_cur) {
-          console.log("до");
           elem.style.marginLeft = '-' + zis.hldr.style.width;
         } else if (elem.id.slice(str4ka.length) > zis.n_cur) {
-          console.log("после");
           elem.style.marginLeft = zis.hldr.style.width;
         }
       }
