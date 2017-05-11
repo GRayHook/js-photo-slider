@@ -44,6 +44,9 @@ function slider(div, imgs, flags){
           case 's': // Полный экран
             zis.options.fullScreen = true;
             break;
+          case 'n': // Полный экран
+            zis.options.ctlHiding = true;
+            break;
           case 'w': // Установить ширину, например: w(200)
             if (get_from_skobki(flags) == "a")
               zis.options.width = "auto";
@@ -426,8 +429,10 @@ function slider(div, imgs, flags){
     zis.div.innerHTML = "";//Дикий колхоз (removeChild() не ремувит все чайлды)
     zis.div.appendChild(crazy_frag);
 
+    zis.ctl = {};
     if (zis.options.fullScreen) {
       var elem = document.getElementById(zis.div.id + "slider_ctl_f");
+      zis.ctl.f = elem;
       elem.onload = function() {
         elem.onclick = function () {
           zis.toggleFullScreen();
@@ -436,9 +441,7 @@ function slider(div, imgs, flags){
         elem.style.left = 15 + 'px';
       };
     }
-
     if(zis.options.controls){
-      zis.ctl = {};
       zis.ctl.l = document.getElementById(zis.div.id + "slider_ctl_l");
       zis.ctl.r = document.getElementById(zis.div.id + "slider_ctl_r");
       zis.ctl.r.onload = function() {
@@ -466,6 +469,12 @@ function slider(div, imgs, flags){
                                zis.ctl.l.offsetHeight / 2 + 'px';
         zis.ctl.l.style.left = 15 + 'px';
       };
+      zis.start_timer_ctls();
+      zis.hldr.onmousemove = function() {
+        zis.stop_timer_ctls();
+        zis.ctls_visiblies('1');
+        zis.start_timer_ctls();
+      };
     }
 
     if(zis.options.dots){
@@ -485,6 +494,15 @@ function slider(div, imgs, flags){
     zis.visibles([0, 1, zis.imgs.length - 1], 'show');
 
     return zis;
+  };
+
+  zis.start_timer_ctls = function() {
+    zis.timer_ctlHiding = setTimeout(function() {
+      zis.ctls_visiblies('0');
+    }, 15000);
+  };
+  zis.stop_timer_ctls = function() {
+    clearTimeout(zis.timer_ctlHiding);
   };
 
   zis.start_timer = function() {
@@ -631,6 +649,17 @@ function slider(div, imgs, flags){
     };
   }
 
+  zis.ctls_visiblies = function(act) {
+    act = act || '0';
+    if (zis.ctl.r) {
+      zis.ctl.r.style.opacity = act;
+      zis.ctl.l.style.opacity = act;
+    }
+    if (zis.ctl.f) {
+      zis.ctl.f.style.opacity = act;
+    }
+  };
+
   zis.onSlideChanged = function(n) {
     console.log('Теперь на ' + n + ' слайде.');
   };
@@ -642,6 +671,7 @@ function slider_opts(){ // Конструктор опций для слайде
   this.controls = false; // Включить стрелки
   this.touches = true; // Включить управление тачскрином
   this.zoom = false;
+  this.ctlHiding = false;
   this.fullScreen = false;
   this.timerAutoSlide = 5000; // Таймер автослайда
   this.delayAfterAction = 10000; // Задержка после действия перед автослайдом
