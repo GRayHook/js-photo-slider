@@ -146,7 +146,6 @@ function slider(div, imgs, flags){
     };
   }
 
-
   zis.goto = function(n) {
     var i = n - zis.n_cur;
     if (n < zis.imgs.length && 0 <= n && i !== 0){
