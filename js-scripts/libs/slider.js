@@ -264,8 +264,6 @@ function slider(div, imgs, flags){
     // если act = 'show'.
     // boolka_invert - если true, то метод обрабатывает все картинки, кроме
     // указанных, в противном случае - только указанные
-    // TODO: А теперь ебани это так, чтобы оставить видимыми только некоторые
-    // фоты
     var len = zis.imgs.length;
     if (boolka_invert) {
       var new_arr = [];
