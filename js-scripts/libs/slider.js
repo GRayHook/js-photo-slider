@@ -462,12 +462,14 @@ function slider(div, imgs, flags){
               zis.delayAfterAction();
           };
         //zis.ctl.l.ontouchstart = zis.ctl.l.onclick;
-        zis.ctl.l.style.top = zis.options.height / 2 -
+        // TODO: Подумай над обработкой пальца
+        zis.ctl.l.style.top = zis.hldr.offsetHeight / 2 -
                                zis.ctl.l.offsetHeight / 2 + 'px';
         zis.ctl.l.style.left = 15 + 'px';
       };
       zis.start_timer_ctls();
       zis.hldr.onmousemove = function() {
+        // FIXME: Срабатывает, когда mouse на 'месте', а объект под ним 'move'
         zis.stop_timer_ctls();
         zis.ctls_visiblies('1');
         zis.start_timer_ctls();
