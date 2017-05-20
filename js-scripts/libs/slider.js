@@ -44,8 +44,12 @@ function slider(div, imgs, flags){
           case 's': // Полный экран
             zis.options.fullScreen = true;
             break;
-          case 'n': // Полный экран
-            zis.options.ctlHiding = true;
+          case 'n': // Скрытие контролов
+            if (get_from_skobki(flags) == "none")
+              zis.options.ctlHiding = false;
+            else
+              zis.options.ctlHiding = get_from_skobki(flags) * 1;
+            flags = drop_skobki(flags);
             break;
           case 'w': // Установить ширину, например: w(200)
             if (get_from_skobki(flags) == "a")
@@ -467,13 +471,15 @@ function slider(div, imgs, flags){
                                zis.ctl.l.offsetHeight / 2 + 'px';
         zis.ctl.l.style.left = 15 + 'px';
       };
-      zis.start_timer_ctls();
-      zis.hldr.onmousemove = function() {
-        // FIXME: Срабатывает, когда mouse на 'месте', а объект под ним 'move'
-        zis.stop_timer_ctls();
-        zis.ctls_visiblies('1');
+      if (zis.options.ctlHiding) {
         zis.start_timer_ctls();
-      };
+        zis.hldr.onmousemove = function() {
+          // TODO: Напиши своё
+          zis.stop_timer_ctls();
+          zis.ctls_visiblies('1');
+          zis.start_timer_ctls();
+        };
+      }
     }
 
     if(zis.options.dots){
@@ -495,14 +501,16 @@ function slider(div, imgs, flags){
     return zis;
   };
 
-  zis.start_timer_ctls = function() {
-    zis.timer_ctlHiding = setTimeout(function() {
-      zis.ctls_visiblies('0');
-    }, 15000);
-  };
-  zis.stop_timer_ctls = function() {
-    clearTimeout(zis.timer_ctlHiding);
-  };
+  if (zis.options.ctlHiding) {
+    zis.start_timer_ctls = function() { // Таймер автоскрытия контролов
+      zis.timer_ctlHiding = setTimeout(function() {
+        zis.ctls_visiblies('0');
+      }, zis.options.ctlHiding);
+    };
+    zis.stop_timer_ctls = function() {
+      clearTimeout(zis.timer_ctlHiding);
+    };
+  }
 
   zis.start_timer = function() {
     if (zis.options.timerAutoSlide){
