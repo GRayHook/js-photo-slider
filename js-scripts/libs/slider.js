@@ -667,6 +667,11 @@ function slider(div, imgs, flags){
     }
     if (zis.ctl.f) {
       zis.ctl.f.style.opacity = act;
+      if (act == '0') {
+        zis.div.style.cursor = 'none';
+      } else {
+        zis.div.style.cursor = '';
+      }
     }
   };
 
