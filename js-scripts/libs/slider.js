@@ -474,10 +474,13 @@ function slider(div, imgs, flags){
       if (zis.options.ctlHiding) {
         zis.start_timer_ctls();
         zis.hldr.onmousemove = function() {
-          // TODO: Напиши своё
-          zis.stop_timer_ctls();
-          zis.ctls_visiblies('1');
-          zis.start_timer_ctls();
+          if (zis.last_cur_position != event.clientX + ':' + event.clientY) {
+            zis.stop_timer_ctls();
+            zis.ctls_visiblies('1');
+            zis.start_timer_ctls();
+            zis.last_cur_position = event.clientX + ':' + event.clientY;
+          }
+          // console.log('Двинулся ' + zis.last_cur_position);
         };
       }
     }
