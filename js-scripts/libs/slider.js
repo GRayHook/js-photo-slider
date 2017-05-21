@@ -165,7 +165,7 @@ function slider(div, imgs, flags){
       for (;i > 0; i--){
         funct();
         // i--;
-        console.log(i);
+        // console.log(i);
       }
 
     } else
