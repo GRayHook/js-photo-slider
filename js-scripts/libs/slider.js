@@ -130,11 +130,8 @@ function slider(div, imgs, flags){
         } else if (zis.div.webkitRequestFullscreen) {
           zis.div.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
         }
-        zis.options.old_width = zis.options.width;
-        zis.options.width = screen.width;
-        zis.options.old_height = zis.options.height;
-        zis.options.height = screen.height;
-        zis.show();
+        zis.resize_when_fullscreen();
+
       } else {
         if (document.cancelFullScreen) {
           document.cancelFullScreen();
@@ -147,6 +144,18 @@ function slider(div, imgs, flags){
         zis.options.height = zis.options.old_height;
         zis.show();
       }
+    };
+    zis.resize_when_fullscreen = function() {
+      // Нужно дождаться, пока dom обновится и считать его
+      setTimeout(function() {
+        zis.options.old_width = zis.options.width;
+        zis.hldr.style.width = '100%';
+        zis.options.width = zis.hldr.offsetWidth;
+        zis.options.old_height = zis.options.height;
+        zis.hldr.style.height = '100%';
+        zis.options.height = zis.hldr.offsetHeight;
+        zis.show();
+      }, 100);
     };
   }
 
