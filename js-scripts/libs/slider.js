@@ -325,7 +325,8 @@ function slider(div, imgs, flags){
   zis.show = function() {
     // Метод для отрисовки слайдера.
     var n = 0;
-    zis.n_cur = 0;
+    // zis.n_cur = 0;
+
     zis.div.style.width = zis.options.width + 'px';
     zis.div.style.height = zis.options.height + 'px';
 
@@ -338,8 +339,9 @@ function slider(div, imgs, flags){
     zis.hldr = holder;
     zis.hldr.style.width = zis.options.width + 'px';
     zis.hldr.style.height = zis.options.height + 'px';
+
+    // Вмещаем слайды в заданные размеры
     if (zis.options.zoom) {
-      // Вмещаем слайды в заданные размеры
       // Если получится, то ранее заданные, размеры перезапишутся
       var all_width = zis.options.width,
         all_height = zis.options.height,
@@ -380,8 +382,10 @@ function slider(div, imgs, flags){
         }
       }
     }
+
     crazy_frag.appendChild(holder);
 
+    // Рисуем элементы управления
     if(zis.options.controls){
       var ctl_left = document.createElement("img");
       var ctl_right = document.createElement("img");
@@ -402,6 +406,7 @@ function slider(div, imgs, flags){
       ctl_fullscreen.src = zis.options.controlsImages.fullScreen;
       holder.appendChild(ctl_fullscreen);
     }
+
     zis.dots = [];
 
     zis.imgs.forEach(function(elem) { // Работа со слайдами
@@ -414,13 +419,19 @@ function slider(div, imgs, flags){
         imgka = elem;
       }
       imgka.id = zis.div.id + '_slider-' + n;
-      if (n === 0){
+
+      if (n === 0)
         imgka.style.marginTop = '0px';
-        imgka.style.marginLeft = '0px';
-      } else {
+      else
         imgka.style.marginTop = '-' + zis.hldr.style.height;
+
+      if (n == zis.n_cur)
+        imgka.style.marginLeft = '0px';
+      else if (n > zis.n_cur)
         imgka.style.marginLeft = zis.hldr.style.width;
-      }
+      else
+        imgka.style.marginLeft = -zis.hldr.style.width;
+
       // imgka.style.display = 'block';
       imgka.style.width = zis.hldr.style.width;
       imgka.style.height = zis.hldr.style.height;
@@ -508,7 +519,21 @@ function slider(div, imgs, flags){
       zis.touches.touches_addEvnts(zis.hldr);
 
     zis.visibles([], 'hide', true);
-    zis.visibles([0, 1, zis.imgs.length - 1], 'show');
+    zis.visibles([
+      function() {
+        if (zis.n_cur === 0)
+          return zis.imgs.length - 1;
+        else
+          return zis.n_cur - 1;
+      }(),
+      zis.n_cur,
+      function() {
+        if (zis.n_cur == zis.imgs.length - 1)
+          return 0;
+        else
+          return zis.n_cur + 1;
+      }()
+    ], 'show');
 
     return zis;
   };
