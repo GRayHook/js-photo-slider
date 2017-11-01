@@ -1,9 +1,9 @@
 var IIITYKA1, IIITYKA2, IIITYKA3;
 window.onload = function(){
   IIITYKA1 = new slider(document.getElementById("slider1"),
-                       ['img/1.jpg',
-                        'img/2.jpg',
-                        'img/3.jpg'],
+                       ['img/js-photo-slider/1.jpg',
+                        'img/js-photo-slider/2.jpg',
+                        'img/js-photo-slider/3.jpg'],
                        't(500)fzw(400)h(100)');
   IIITYKA2 = new slider(document.getElementById("slider2"),
                         null, {
@@ -14,9 +14,9 @@ window.onload = function(){
                           timerMap: { even: 1000, odd: 4000 }
                         }).show();
   IIITYKA3 = new slider(document.getElementById("slider3"),
-                        ['img/1.jpg',
-                         'img/3.jpg',
-                         'img/2.jpg'],
+                        ['img/js-photo-slider/1.jpg',
+                         'img/js-photo-slider/3.jpg',
+                         'img/js-photo-slider/2.jpg'],
                         { width: 600, height: 450,
                           dotsBorder: 10,
                           controls: true, dots: true
