@@ -370,6 +370,7 @@ function slider(div, imgs, flags){
   };
   zis.mk_correct = function(new_n_cur) {
     // Правит margin-top так, что все элементы находятся на одной линии
+    // TODO: Нужно блокировать анимацию на время выполнения этого метода
     var boolka = false;
     nodeForEach.call(zis.hldr.childNodes, function(elem) {
       var str4ka = zis.div.id + '_slider-',
