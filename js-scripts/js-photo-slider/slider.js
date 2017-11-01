@@ -180,46 +180,94 @@ function slider(div, imgs, flags){
     } else
       console.log("Error: slider.goto");
   };
+  zis.elem_setter = function(elem, style, value) {
+    switch (style) {
+      case 'margin':
+        if (zis.options.vertical) {
+          elem.style.marginTop = value;
+        } else {
+          elem.style.marginLeft = value;
+        }
+        break;
+      case 'size':
+        if (zis.options.vertical) {
+          elem.style.height = value;
+        } else {
+          elem.style.width = value;
+        }
+        break;
+      default:
+        console.log("Alarma! elem_setter doesn't know style" + style );
+    }
+  };
+
+  zis.elem_getter = function(elem, style) {
+    var result;
+    switch (style) {
+      case 'size':
+        if (zis.options.vertical) {
+          result = elem.style.height;
+        } else {
+          result = elem.style.width;
+        }
+        break;
+      default:
+        console.log("Alarma! elem_getter doesn't know style" + style );
+    }
+    return result;
+  };
   zis.next = function() {
     // Слайдить вперёд
     var elem;
+
     if(zis.n_cur === zis.imgs.length - 1){
       // Переход в с последнего на первый:
       // zis.prev_to_beg();
       zis.visibles([], 'hide', true);
       zis.visibles([zis.imgs.length - 1, 0, 1], 'show');
+      zis.mk_correct(0);
 
-      if (zis.imgs.length > 1) {
-        elem = document.getElementById(zis.div.id + "_slider-" + 1);
-        elem.style.transition = 'none';
-        elem.style.marginLeft = zis.hldr.style.width;
-        elem.style.transition = '';
-      }
+      // elem = document.getElementById(zis.div.id + "_slider-" + 1);
+      // elem.style.transition = 'none';
+      // elem.style.marginLeft = zis.hldr.style.width;
+      // zis.elem_setter(elem, 'margin', zis.elem_getter(zis.hldr, 'size'));
+      // elem.style.transition = '';
 
       elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
-      elem.style.marginLeft = zis.hldr.style.width;
+      if (!zis.options.vertical) {
+        elem.style.marginLeft = zis.hldr.style.width;
+      } else {
+        elem.style.marginTop = '-' + 3 * zis.hldr.offsetHeight + 'px';
+      }
+      // zis.elem_setter(elem, 'margin', zis.elem_getter(zis.hldr, 'size'));
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
       zis.n_cur = 0;
       elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
-      elem.style.marginLeft = '0px';
+      // elem.style.marginLeft = '0px';
+      zis.elem_setter(elem, 'margin', '0px');
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     } else {
       // Переход на следующий
-      var shows = [zis.n_cur, zis.n_cur + 1, zis.n_cur + 2];
+      var shows = [zis.n_cur, zis.n_cur + 1];
       if (zis.n_cur == zis.imgs.length - 2) {
         shows.push(0);
+      } else {
+        shows.push(zis.n_cur + 2);
       }
       zis.visibles([], 'hide', true);
       zis.visibles(shows, 'show');
+      zis.mk_correct(zis.n_cur + 1);
 
       elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
-      elem.style.marginLeft = '-' + zis.hldr.style.width;
+      // elem.style.marginLeft = '-' + zis.hldr.style.width;
+      zis.elem_setter(elem, 'margin', '-' + zis.elem_getter(zis.hldr, 'size'));
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
       elem = document.getElementById(zis.div.id + "_slider-" + (++zis.n_cur));
-      elem.style.marginLeft = '0px';
+      // elem.style.marginLeft = '0px';
+      zis.elem_setter(elem, 'margin', '0px');
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     }
@@ -233,39 +281,61 @@ function slider(div, imgs, flags){
       var last_elem = zis.imgs.length - 1;
       zis.visibles([], 'hide', true);
       zis.visibles([0, last_elem, last_elem - 1], 'show');
+      zis.mk_correct(last_elem);
 
-      if (zis.imgs.length > 1) {
-        var indofelem = zis.div.id + "_slider-" + (last_elem - 1);
-        elem = document.getElementById(indofelem);
-        elem.style.transition = 'none';
-        elem.style.marginLeft = '-' + zis.hldr.style.width;
-        elem.style.transition = '';
-      }
+      // if (zis.imgs.length > 1) {
+      //   var indofelem = zis.div.id + "_slider-" + (last_elem - 1);
+      //   elem = document.getElementById(indofelem);
+      //   elem.style.transition = 'none';
+      //   // elem.style.marginLeft = '-' + zis.hldr.style.width;
+      //   zis.elem_setter(elem, 'margin',
+      //                   '-' + zis.elem_getter(zis.hldr, 'size'));
+      //   elem.style.transition = '';
+      // }
 
       elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
-      elem.style.marginLeft = '-' + zis.hldr.style.width;
+      if (!zis.options.vertical) {
+        elem.style.marginLeft = '-' + zis.hldr.style.width;
+      } else {
+        elem.style.marginTop = zis.hldr.style.height;
+      }
+      // zis.elem_setter(elem, 'margin', '-' + zis.elem_getter(zis.hldr, 'size'));
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
       zis.n_cur = last_elem;
       elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
-      elem.style.marginLeft = '0px';
+      // zis.elem_setter(elem, 'margin', '0px');
+      if (!zis.options.vertical) {
+        elem.style.marginLeft = '0px';
+      } else {
+        elem.style.marginTop = '-' + 2 * zis.hldr.offsetHeight + 'px';
+      }
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     } else {
       // Переход на предыдущий
-      var shows = [zis.n_cur, zis.n_cur - 1, zis.n_cur - 2];
+      var shows = [zis.n_cur, zis.n_cur - 1];
       if (zis.n_cur == 1) {
         shows.push(zis.imgs.length - 1);
+      } else {
+        shows.push(zis.n_cur - 2);
       }
       zis.visibles([], 'hide', true);
       zis.visibles(shows, 'show');
+      zis.mk_correct(zis.n_cur - 1);
 
       elem = document.getElementById(zis.div.id + "_slider-" + zis.n_cur);
-      elem.style.marginLeft = zis.hldr.style.width;
+      if (!zis.options.vertical) {
+        elem.style.marginLeft = zis.hldr.style.width;
+      } else {
+        elem.style.marginTop = '0px';
+      }
+      // zis.elem_setter(elem, 'margin', zis.elem_getter(zis.hldr, 'size'));
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
       elem = document.getElementById(zis.div.id + "_slider-" + (--zis.n_cur));
-      elem.style.marginLeft = '0px';
+      // elem.style.marginLeft = '0px';
+      zis.elem_setter(elem, 'margin', '0px');
       if(zis.options.dots)
         zis.dots[zis.n_cur].invert();
     }
@@ -297,26 +367,43 @@ function slider(div, imgs, flags){
         }
       }
     }
-    zis.mk_correct();
   };
-  zis.mk_correct = function() {
+  zis.mk_correct = function(new_n_cur) {
     // Правит margin-top так, что все элементы находятся на одной линии
     var boolka = false;
     nodeForEach.call(zis.hldr.childNodes, function(elem) {
       var str4ka = zis.div.id + '_slider-',
         indof = elem.id.indexOf(str4ka);
       if (indof === 0) {
-        if (elem.style.display == 'block')
+        if (elem.style.display == 'block' && !zis.options.vertical)
           if (boolka) {
             elem.style.marginTop = '-' + zis.hldr.style.height;
           } else {
             elem.style.marginTop = '0';
             boolka = true;
-        }
-        if (elem.id.slice(str4ka.length) < zis.n_cur) {
-          elem.style.marginLeft = '-' + zis.hldr.style.width;
-        } else if (elem.id.slice(str4ka.length) > zis.n_cur) {
-          elem.style.marginLeft = zis.hldr.style.width;
+          }
+        if (elem.id.slice(str4ka.length) < new_n_cur) {
+          if (!zis.options.vertical) {
+            elem.style.marginLeft = '-' + zis.hldr.style.width;
+          } else {
+            elem.style.marginTop = '-' + zis.hldr.style.height;
+          }
+          // if (zis.options.vertical) {
+          //   elem.style.marginTop = '-' + zis.hldr.style.height;
+          // }
+          // zis.elem_setter(elem, 'margin',
+          //                 '-' + zis.elem_getter(elem, 'size'));
+        } else if (elem.id.slice(str4ka.length) > new_n_cur) {
+          if (!zis.options.vertical) {
+            elem.style.marginLeft = zis.hldr.style.width;
+          } else {
+            elem.style.marginTop = '0px';
+          }
+          // if (zis.options.vertical) {
+          //   elem.style.marginTop = '0px';
+          // }
+          // elem.style.marginLeft = zis.hldr.style.width;
+          // zis.elem_setter(elem, 'margin', zis.elem_getter(elem, 'size'));
         }
       }
     });
@@ -425,12 +512,14 @@ function slider(div, imgs, flags){
       else
         imgka.style.marginTop = '-' + zis.hldr.style.height;
 
-      if (n == zis.n_cur)
+      if (!zis.options.vertical) {
+        if (n == zis.n_cur)
         imgka.style.marginLeft = '0px';
-      else if (n > zis.n_cur)
+        else if (n > zis.n_cur)
         imgka.style.marginLeft = zis.hldr.style.width;
-      else
+        else
         imgka.style.marginLeft = -zis.hldr.style.width;
+      }
 
       // imgka.style.display = 'block';
       imgka.style.width = zis.hldr.style.width;
@@ -534,6 +623,7 @@ function slider(div, imgs, flags){
           return zis.n_cur + 1;
       }()
     ], 'show');
+    zis.mk_correct(zis.n_cur);
 
     return zis;
   };
@@ -727,15 +817,16 @@ function slider_opts(){ // Конструктор опций для слайде
   this.width = 300; // Ширина
   this.height = 200; // Высота
   this.controlsImages = { // Картинки для стрелочек
-    left: 'img/left.png',
-    right:'img/right.png',
-    fullScreen:'img/fullscreen.png'
+    left: '/img/js-photo-slider/left.png',
+    right:'/img/js-photo-slider/right.png',
+    fullScreen:'/img/js-photo-slider/fullscreen.png'
   };
   this.dotsMargin = 20; // Расстояние между точками
   this.touchDifferenceToSlide = 40; // Длина пути пальца для слайда
   this.dotsRadius = 7; // Радиус точки
   this.dotsBorder = 4; // Граница точки
   this.timerMap = null; // Карта таймеров для слайда
+  this.vertical = false; // Направление слайда
 }
 
 function slider_dot(papa, id, br, r, color, bcolor) {

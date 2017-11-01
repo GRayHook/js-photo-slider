@@ -1,11 +1,13 @@
 .slider_holder img{
   display: block;
   transition: margin-left 0.5s cubic-bezier(0,0,0.2,1) 0s,
+              margin-top 0.5s cubic-bezier(0,0,0.2,1) 0s,
               opacity 0.5s cubic-bezier(0,0,0.2,1) 0s;
 }
 .slider_holder div{
   display: block;
   transition: margin-left 0.5s cubic-bezier(0,0,0.2,1) 0s,
+              margin-top 0.5s cubic-bezier(0,0,0.2,1) 0s,
               opacity 0.5s cubic-bezier(0,0,0.2,1) 0s;
 }
 .slider_ctl{

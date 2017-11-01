@@ -11,7 +11,8 @@ window.onload = function(){
                           height: "auto",
                           dots: true,
                           controls: true,
-                          timerMap: { even: 1000, odd: 4000 }
+                          timerMap: { even: 1000, odd: 4000 },
+                          vertical: true
                         }).show();
   IIITYKA3 = new slider(document.getElementById("slider3"),
                         ['/img/js-photo-slider/1.jpg',
